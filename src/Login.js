@@ -4,6 +4,7 @@ import axios from 'axios'
 export default class Login extends React.Component {
     constructor(props) {
       super(props);
+      this.wrapper = React.createRef();
       this.state = {
           name: '',
           password: ''

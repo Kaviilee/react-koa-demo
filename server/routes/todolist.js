@@ -6,5 +6,8 @@ const router = require('koa-router')()
 
 router.get('/todo/:id', todolist.getTodolist)
 router.post('/todo', todolist.addTodo)
+router.delete('/todo/:user_id/:id', todolist.removeTodo)
+router.put('/todo', todolist.updateTodo)
+// console.log(router)
 
 module.exports = router

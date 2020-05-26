@@ -10,13 +10,13 @@ class TodoItem extends React.Component {
         this.state = {}
     }
     handleFinish = () => {
-        this.props.onFinish(this.props.index)
+        this.props.onFinish(this.props.itemInfo)
     }
     handleDelete = () => {
-        this.props.onDelete(this.props.index)
+        this.props.onDelete(this.props.itemInfo)
     }
     render() {
-        const { index, content } = this.props
+        const { index, itemInfo: {content} } = this.props
         return (
             <div className="item">
                 <span className="text">
@@ -36,10 +36,10 @@ class FinishedItem extends React.Component {
         this.state = {}
     }
     handleBack = () => {
-        this.props.onBack(this.props.index)
+        this.props.onBack(this.props.itemInfo)
     }
     render() {
-        const { index, content } = this.props
+        const { index, itemInfo: {content} } = this.props
         return (
             <div className="item">
                 <span className="text finished">
@@ -55,16 +55,21 @@ class FinishedItem extends React.Component {
 export default class TodoList extends React.Component {
     todoRender = data => {
         return data.map((item, index) => {
-            return !item.status && <TodoItem key={index} index={index} content={item.content} onFinish={this.handleFinish} onDelete={this.handleDelete}></TodoItem>
+            return !item.status && <TodoItem key={index} index={index} itemInfo={item} onFinish={this.handleFinish} onDelete={this.handleDelete}></TodoItem>
         })
     }
     fininshRender = data => {
-        return data.map((item, index) => {
-            return item.status && <FinishedItem key={index} index={index} content={item.content} onBack={this.handleBack}></FinishedItem>
-        })
+        if (data.length) {
+            return data.map((item, index) => {
+                return item.status && <FinishedItem key={index} index={index} itemInfo={item} onBack={this.handleBack}></FinishedItem>
+            })
+        } else {
+            return <div>无已完成事项</div>
+        }
     }
     constructor(props) {
         super(props)
+        this.wrapper = React.createRef();
         this.state = {
             name: 'kavii',
             activeKey: 'todo',
@@ -85,31 +90,41 @@ export default class TodoList extends React.Component {
         this.getTodoList()
     }
 
-    handleDelete = index => {
-        const arr = this.state.list
-        arr.splice(index, 1)
-        message.info('任务删除')
-        this.setState({
-            list: arr
+    handleDelete = data => {
+        axios.delete(`/api/todo/${data.user_id}/${data.id}`).then(() => {
+            message.info('任务删除')
+            this.getTodoList()
+        }).catch(err => {
+            message.error('删除失败')
         })
     }
 
-    handleFinish = index => {
-        const arr = this.state.list
-        arr[index].status = true
-        this.setState({
-            list: arr
+    handleFinish = data => {
+        const obj = {
+            id: data.id,
+            user_id: data.user_id,
+            status: !data.status
+        }
+        axios.put('/api/todo', obj).then(() => {
+            message.success('任务完成')
+            this.getTodoList()
+        }).catch(err => {
+            message.error('任务完成失败')
         })
-        message.success('任务完成')
     }
     
-    handleBack = index => {
-        const arr = this.state.list
-        arr[index].status = false
-        this.setState({
-            list: arr
+    handleBack = data => {
+        const obj = {
+            id: data.id,
+            user_id: data.user_id,
+            status: !data.status
+        }
+        axios.put('/api/todo', obj).then(() => {
+            message.success('任务还原')
+            this.getTodoList()
+        }).catch(err => {
+            message.error('任务还原失败')
         })
-        message.info('任务还原')
     }
 
     handleActiveKeyChange = activeKey => {
@@ -130,14 +145,10 @@ export default class TodoList extends React.Component {
         } else {
             let obj = {
                 status: false,
-                content: value
+                content: value,
+                id: this.state.id
             }
             this.addTodo(obj)
-            // const arr = this.state.list
-            // arr.push(obj)
-            // this.setState({
-            //     list: arr
-            // })
         }
         this.setState({
             todos: ''
@@ -155,17 +166,19 @@ export default class TodoList extends React.Component {
     getTodoList = () => {
         const id = this.state.id
         console.log(id)
-        axios.get(`/todo/${1}`).then(res => {
-            console.log(res)
+        axios.get(`/api/todo/${1}`).then(res => {
+            this.setState({
+                list: res.data
+            })
         }).catch(e => {
             console.log(e.response)
         })
     }
 
     addTodo = (data) =>{
-        axios.post('/todo', data).then(res => {
-            console.log(res)
+        axios.post('/api/todo', data).then(res => {
             message.success('任务添加')
+            this.getTodoList()
         }).catch(error => {
             console.log(error.response)
         })
@@ -174,7 +187,7 @@ export default class TodoList extends React.Component {
     render() {
         return (
             <div>
-                <span>欢迎: {this.state.name + this.state.id}! 你的待办事项是:</span>
+                <span>欢迎: {this.state.name}! 你的待办事项是:</span>
                 <Search placeholder="请输入待办事项" type="text" value={this.state.todos} onChange={this.handleChange} onSearch={value => this.handleInput(value)}></Search>
                 <Tabs activeKey={this.state.activeKey} onChange={this.handleActiveKeyChange}>
                     <TabPane tab="待办事项" key="todo">
@@ -183,7 +196,9 @@ export default class TodoList extends React.Component {
                         </div>
                     </TabPane>
                     <TabPane tab="已完成事项" key="finished">
-                        { this.fininshRender(this.state.list) }
+                        <div className="todoList">
+                            { this.fininshRender(this.state.list) }
+                        </div>
                     </TabPane>
                 </Tabs>
             </div>

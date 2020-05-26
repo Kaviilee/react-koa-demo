@@ -16,15 +16,18 @@
     "koa-jwt": "^4.0.0",
     "koa-logger": "^3.2.1",
     "koa-router": "^8.0.8",
+    "koa-static": "^5.0.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "sequelize": "^5.21.10"
+    "sequelize": "^5.21.10",
+    "source-map-explorer": "^2.4.2"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

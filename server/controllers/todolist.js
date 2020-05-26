@@ -1,9 +1,10 @@
 const todolist = require('../models/todolist.js')
+// console.log(todolist)
 
 const getTodolist = async (ctx) => {
-    console.log(ctx.params)
     const id = ctx.params.id
-    const result = await todolist.getTodolist(id)
+    const result = await todolist.getTodolistById(id)
+    // console.log(result)
     ctx.body = result
 }
 
@@ -28,12 +29,10 @@ const removeTodo = async (ctx) => {
 
 
 const updateTodo = async (ctx) => {
-    const id = ctx.params.id
-    const userId = ctx.params.user_id
-    let status = ctx.params.status
-    status === '0' ? status = true : status = false// 状态反转（更新）
+    console.log(ctx.request)
+    const { id, user_id: userId, status } = ctx.request.body
 
-    const success = await todolist.updateTodolist(id, userId, status)
+    const success = await todolist.updateTodo(id, userId, status)
 
     ctx.body = {
         success

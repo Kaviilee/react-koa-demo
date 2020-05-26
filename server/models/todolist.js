@@ -9,7 +9,7 @@ const getTodolistById = async function(id) {
         where: {
             user_id: id
         },
-        attributes: ['id', 'content', 'status'] // 只需返回此三个字段
+        attributes: ['id', 'user_id', 'content', 'status'] // 只需返回此三个字段
     })
     return todolist
 }
@@ -34,6 +34,7 @@ const removeTodo = async function(id, userId) {
 }
 
 const updateTodo = async function(id, userId, status) {
+    console.log(id, userId, status)
     const result = await Todolist.update(
         {
           status: status
@@ -48,7 +49,7 @@ const updateTodo = async function(id, userId, status) {
     return result[0] === 1 // 返回一个数组，更新成功的条目为1否则为0。由于只更新一个条目，所以只返回一个元素
 }
 
-module.exprts = {
+module.exports = {
     getTodolistById,
     addTodo,
     removeTodo,

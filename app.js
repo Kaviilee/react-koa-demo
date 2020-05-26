@@ -1,22 +1,17 @@
 const Koa = require('koa')
 const json = require('koa-json')
 const logger = require('koa-logger')
+const path = require('path')
+const serve = require('koa-static')
 const koaBodyparser = require('koa-bodyparser')
-// const router = require('koa-router')()
-// const auth = require('./server/routes/auth')
-// const todo = require('./server/routes/todolist')
 const router = require('./server/routes')
 
 const app = new Koa()
-// const router = koaRouter()
 
 app.use(koaBodyparser())
     .use(json())
     .use(logger())
     .use(router.routes())
-// router.use('/auth', auth.routes())
-// router.use('/todo', todo.routes())
-// app.use(router.routes())
 
 app.use(async (ctx, next) => {
     let start = new Date();
@@ -44,9 +39,7 @@ app.use(async (ctx, next) => {
     }
 })
 
-// router.use('/auth', auth.routes())
-// app.use(router.routes())
-
+app.use(serve(path.resolve('dist')))
 
 app.on('error', (err, ctx) => {
     logger('server error', err)
