@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "es6",
+        "allowSyntheticDefaultImports": true,
+        "target": "es6",
+        "jsx": "react",
+        "allowJs": true,
+        "noEmit": true,
+        "paths": {
+            // "components/*": ["src/components/*"],
+            "@components": ["./src/components"],
+            "~": ["./src"]
+        },
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

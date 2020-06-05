@@ -22,7 +22,7 @@ const getUserByName = async function (name) {
         user_name: name
       }
     })
-  
+
     return userInfo
   }
 

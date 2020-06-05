@@ -1,0 +1,10 @@
+version "1"
+
+volumes:
+    mysqlstorage;
+
+services:
+    node:
+        build:
+            context: .
+            dockerfile: Dockerfile

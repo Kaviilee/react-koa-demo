@@ -11,7 +11,7 @@ const getTodolist = async (ctx) => {
 const addTodo = async (ctx) => {
     const data = ctx.request.body
     const success = await todolist.addTodo(data)
-    
+
     ctx.body = {
         success: success
     }
