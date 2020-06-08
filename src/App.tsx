@@ -1,6 +1,8 @@
+import './App.css';
+import logo from './logo.svg'
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
-import routes from '~/routes'
+import routes from '@routes'
 
 type RoutesItem = {
     key: string | number,
@@ -12,6 +14,7 @@ type RoutesItem = {
 }
 
 function App() {
+    // console.log(routes)
     const authed: string| boolean = sessionStorage.getItem('token') || false // 可以利用redux
     const authPath: string = '/login' // 默认未登录时返回的页面
     const renderRoutes = (routes: RoutesItem[], authed: boolean | string, authPath = '/login', extraProps = {}, switchProps = {}) => routes ? (
@@ -33,11 +36,21 @@ function App() {
     ): null
 
     return (
-        <Router>
-            <Switch>
-                { renderRoutes(routes, authed, authPath) }
-            </Switch>
-        </Router>
+        <div className="App">
+            <header className="App-header">
+                <img src={logo} className="App-logo" alt="logo" />
+                <p>
+                React Koa Demo
+                </p>
+            </header>
+            <main className="App-main">
+                <Router>
+                <Switch>
+                    {renderRoutes(routes, authed, authPath)}
+                </Switch>
+                </Router>
+            </main>
+        </div>
     )
 }
 

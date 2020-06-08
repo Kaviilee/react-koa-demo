@@ -17,7 +17,8 @@ export const webpackConfig: Configuration = {
         extensions: ['.js', '.ts', '.tsx'],
         alias: {
             '~': resolve(frontendDir, "src"),
-            "@components": resolve(frontendDir, "src/components")
+            "@components": resolve(frontendDir, "src/components"),
+            "@routes": resolve(frontendDir, "src/routes")
         }
     },
     module: {
@@ -40,17 +41,27 @@ export const webpackConfig: Configuration = {
                     {
                       loader: 'css-loader',
                       options: {
-                        modules: {
-                          mode: 'local',
-                          context: resolve(frontendDir, 'src'),
-                          localIdentName: '[path][name]__[local]',
-                        },
+                        modules: false,
+                        // modules: {
+                        //   mode: 'local',
+                        //   context: resolve(frontendDir, 'src'),
+                        //   localIdentName: '[path][name]__[local]',
+                        // },
                         localsConvention: 'camelCaseOnly',
                         importLoaders: 0,
                         sourceMap: true,
                       },
                     },
                 ],
+            },
+            {
+                test: /\.(png|jpg|gif|svg)$/,
+                use: [
+                    {
+                        loader: "file-loader",
+                        options: {}
+                    }
+                ]
             }
         ]
     },
@@ -61,7 +72,14 @@ export const webpackConfig: Configuration = {
         hot: true,
         port: 8081,
         proxy: {
-            '/api/v1': 'http://localhost:3000',
+            '/auth': {
+                target: 'http://localhost:8889',
+                changeOrigin: true
+            },
+            '/api': {
+                target: 'http://localhost:8889',
+                changeOrigin: true
+            }
         },
     },
     plugins: [
