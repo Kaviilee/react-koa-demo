@@ -3,15 +3,15 @@ import Login from '@components/Login'
 import TodoList from '@components/TodoList'
 
 type RoutesItem = {
-    key: string | number,
+    key?: string | number,
     path: string,
     exact: boolean,
-    requireAuth: boolean,
-    authPath: string,
+    requireAuth?: boolean,
+    authPath?: string,
     component: any
 }
 
-const routes = [{
+const routes: RoutesItem[] = [{
     path: '/hello',
     exact: true,
     component: Hello,
@@ -24,6 +24,6 @@ const routes = [{
     path: '/todo',
     exact: true,
     component: TodoList
-}] as RoutesItem[]
+}]
 
 export default routes

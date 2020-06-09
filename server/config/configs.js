@@ -1,4 +1,4 @@
-var config = {
+const config = {
     database: 'todolist',
     username: 'root',
     password: 'root',
