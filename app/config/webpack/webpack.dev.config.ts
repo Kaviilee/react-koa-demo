@@ -2,6 +2,10 @@ import { resolve, join } from 'path';
 import { Configuration  } from 'webpack';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+import * as CompressionWebpackPlugin from 'compression-webpack-plugin'
+import * as ProgressBarPlugin from 'progress-bar-webpack-plugin'
+// const CompressionWebpackPlugin = require（'compression-webpack-plugin')
 
 const frontendDir = resolve(__dirname, '..', '..')
 
@@ -55,11 +59,18 @@ export const webpackConfig: Configuration = {
                 ],
             },
             {
-                test: /\.(png|jpg|gif|svg)$/,
+                test: /\.less$/,
+                loader: 'less-loader'
+            },
+            {
+                test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
                 use: [
                     {
-                        loader: "file-loader",
-                        options: {}
+                        loader: "url-loader",
+                        options: {
+                            limit: 10000,
+                            name: '[name].[ext]?[hash]'
+                        }
                     }
                 ]
             }
@@ -88,5 +99,41 @@ export const webpackConfig: Configuration = {
             filename: `static/css/[name].[chunkhash:8].css`,
             chunkFilename: `static/css/[name].[chunkhash:8].css`,
         }),
+        new BundleAnalyzerPlugin(),
+        new CompressionWebpackPlugin({
+            filename: "[path].gz[query]",
+            algorithm: "gzip",
+            test: /\.js$|\.css$|\.html$/,
+            threshold: 10240,
+            minRatio: 0.8
+        }),
+        new ProgressBarPlugin({
+            format: 'build [:bar] :percent (:elapsed seconds)',
+            clear: false,
+            width: 60
+        })
     ],
+    optimization: {
+        splitChunks: { // 提取公共代码
+            chunks: 'async',
+            minSize: 30000,
+            // minRemainingSize: 0,
+            maxSize: 0,
+            minChunks: 1,
+            maxAsyncRequests: 6,
+            maxInitialRequests: 4,
+            automaticNameDelimiter: '~',
+            cacheGroups: {
+                defaultVendors: {
+                test: /[\\/]node_modules[\\/]/,
+                priority: -10
+                },
+                default: {
+                minChunks: 2,
+                priority: -20,
+                reuseExistingChunk: true
+                }
+            }
+        }
+    }
 }

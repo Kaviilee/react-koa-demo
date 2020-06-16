@@ -1,0 +1,28 @@
+{
+    "name": "react-demo-api",
+    "version": "1.0.0",
+    "author": "jiaweilee",
+    "license": "MIT",
+    "scripts": {
+        "serve": "babel-node app.js"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.10.2",
+        "@babel/node": "^7.10.1",
+        "@babel/preset-react": "^7.10.1"
+    },
+    "dependencies": {
+        "@types/node": "^14.0.11",
+        "jsonwebtoken": "^8.5.1",
+        "koa": "^2.12.0",
+        "koa-bodyparser": "^4.3.0",
+        "koa-json": "^2.0.2",
+        "koa-jwt": "^4.0.0",
+        "koa-logger": "^3.2.1",
+        "koa-router": "^9.0.1",
+        "koa-static": "^5.0.0",
+        "mysql": "^2.18.1",
+        "mysql2": "^2.1.0",
+        "sequelize": "^5.21.11"
+    }
+}

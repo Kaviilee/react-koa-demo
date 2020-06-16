@@ -2,9 +2,10 @@ const Koa = require('koa')
 const json = require('koa-json')
 const logger = require('koa-logger')
 const path = require('path')
+// import path from 'path'
 const serve = require('koa-static')
 const koaBodyparser = require('koa-bodyparser')
-const router = require('./server/routes')
+const router = require('./src/routes')
 
 const app = new Koa()
 

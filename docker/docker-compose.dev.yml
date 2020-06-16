@@ -1,0 +1,74 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./app/Dockerfile.dev
+    image: react-app
+    container_name: react-app
+    volumes: # For dev server to use our local files
+      - ../app:/usr/src/app
+      - react-app-volume:/usr/src/app/node_modules
+    restart: always
+    ports:
+      - '3002:3000'
+    command:
+      "npm run dev"
+  api:
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile.dev
+    image: react-api
+    container_name: react-api
+    environment:
+      - DB_NAME=react
+      - DB_USER=react
+      - DB_PASSWORD=react
+      - DB_HOST=db
+      - DB_PORT=3306
+      - NODE_ENV=development
+    links:
+      - db:db
+    volumes:
+      - ../api:/usr/src/api
+      - react-api-volume:/usr/src/api/node_modules
+    ports:
+      - '8080'
+    depends_on:
+      - "db"
+    command:
+      "npm run serve"
+  db:
+    build:
+      context: ./
+      dockerfile: ./db/Dockerfile.dev
+    env_file: ./db/mysql.env
+    image: react-db
+    container_name: react-db
+    volumes:
+      - ./db/db-data:/var/lib/mysql
+    command: mysqld
+    # --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci #设置utf8字符集
+    restart: always
+    ports:
+      - '6033:3306'
+  server:
+    build:
+      context: ./
+      dockerfile: ./server/Dockerfile.dev
+    image: react-server
+    container_name: react-server
+    volumes:
+      - ../nginx/nginx.dev.conf:/etc/nginx/nginx.conf
+    ports:
+      - '8082:80' # Connect localhost 80 port to container 80 port
+    links: # Link services to access http://app and  http://api inside the container
+      - api:api
+      - app:app
+      - db:db
+volumes:
+  react-api-volume:
+    driver: local
+  react-app-volume:
+    driver: local

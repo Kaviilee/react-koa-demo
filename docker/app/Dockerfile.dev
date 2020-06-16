@@ -1,0 +1,20 @@
+FROM node:10.15-alpine
+
+ENV HOST 0.0.0.0
+ENV APP_ROOT /usr/src/app
+
+# RUN mkdir -p ${APP_ROOT}
+WORKDIR ${APP_ROOT}
+
+COPY ./app/package.json .
+
+RUN npm install -g -s --no-progress yarn && \
+    yarn && \
+    yarn run build && \
+    yarn cache clean
+
+# RUN npm install -g cnpm --registry=https://registry.npm.taobao.org \
+# && cnpm install
+# RUN npm install
+
+EXPOSE 3000
