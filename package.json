@@ -7,8 +7,8 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev:install": "docker-compose -f docker/docker-compose.dev.yml build",
-    "dev:up": "docker-compose -f docker/docker-compose.dev.yml -p react-demo up -d",
-    "dev:down": "docker-compose -f docker/docker-compose.dev.yml -p react-demo down"
+    "dev:install": "docker-compose build",
+    "dev:up": "docker-compose -p react-demo up -d",
+    "dev:down": "docker-compose -p react-demo down"
   }
 }

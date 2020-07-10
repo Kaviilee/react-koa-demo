@@ -13,6 +13,7 @@ const postUserAuth = async (ctx) => {
     // console.log(ctx)
     const data = ctx.request.body
     const userInfo = await user.getUserByName(data.name)
+    console.log(userInfo)
 
     if (userInfo !== null) {
         //!bcrypt.compareSync(data.password, userInfo.password)

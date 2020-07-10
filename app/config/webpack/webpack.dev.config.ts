@@ -79,19 +79,25 @@ export const webpackConfig: Configuration = {
     devtool: 'source-map',
     devServer: {
         historyApiFallback: true,
+        disableHostCheck: true,
         inline: true,
         hot: true,
-        port: 8081,
-        proxy: {
-            '/auth': {
-                target: 'http://localhost:8889',
-                changeOrigin: true
-            },
-            '/api': {
-                target: 'http://localhost:8889',
-                changeOrigin: true
-            }
-        },
+        // public: '/',
+        // proxy: {
+        //     '/auth': {
+        //         target: 'http://localhost:8080',
+        //         changeOrigin: true
+        //     },
+        //     '/api': {
+        //         target: 'http://localhost:8080',
+        //         changeOrigin: true
+        //     }
+        // },
+        watchOptions: {
+            aggregateTimeout: 300,
+            poll: 1000,
+            ignored: /node_modules/
+        }
     },
     plugins: [
         new HtmlWebpackPlugin({ template: 'index.html' }),
@@ -99,7 +105,9 @@ export const webpackConfig: Configuration = {
             filename: `static/css/[name].[chunkhash:8].css`,
             chunkFilename: `static/css/[name].[chunkhash:8].css`,
         }),
+        // 打包分析plugin
         new BundleAnalyzerPlugin(),
+        // gzip压缩
         new CompressionWebpackPlugin({
             filename: "[path].gz[query]",
             algorithm: "gzip",
@@ -107,6 +115,7 @@ export const webpackConfig: Configuration = {
             threshold: 10240,
             minRatio: 0.8
         }),
+        // 打包进度条显示
         new ProgressBarPlugin({
             format: 'build [:bar] :percent (:elapsed seconds)',
             clear: false,
@@ -125,13 +134,13 @@ export const webpackConfig: Configuration = {
             automaticNameDelimiter: '~',
             cacheGroups: {
                 defaultVendors: {
-                test: /[\\/]node_modules[\\/]/,
-                priority: -10
+                    test: /[\\/]node_modules[\\/]/,
+                    priority: -10
                 },
                 default: {
-                minChunks: 2,
-                priority: -20,
-                reuseExistingChunk: true
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true
                 }
             }
         }

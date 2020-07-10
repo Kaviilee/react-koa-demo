@@ -14,7 +14,7 @@ Platform:
   win32 x64
 
 Trace: 
-  SyntaxError: F:\react-koa-demo\app\package.json: Unexpected token } in JSON at position 355
+  SyntaxError: F:\react-koa-demo\app\package.json: Unexpected token / in JSON at position 351
       at JSON.parse (<anonymous>)
       at C:\Program Files (x86)\Yarn\lib\cli.js:1625:59
       at Generator.next (<anonymous>)
@@ -32,7 +32,8 @@ npm manifest:
       "license": "MIT",
       "scripts": {
         "build": "webpack --config config/webpack/config.js",
-        "dev": "webpack-dev-server --config ../config/webpack/config.js",
+        "dev": "webpack-dev-server --config config/webpack/config.js"
+      //   "dev": "webpack-dev-server --public 10.10.10.61 --watch-poll"
       },
       "devDependencies": {
         "@babel/core": "^7.10.2",
