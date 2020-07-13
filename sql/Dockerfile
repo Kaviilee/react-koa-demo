@@ -12,6 +12,7 @@ USER root
 WORKDIR $WORK_PATH/
 
 COPY *.sql $WORK_PATH/
-COPY ./init_db.sh /docker-entrypoint-initdb.d/init_db.sh
+RUN mv /$WORK_PATH/*.sql /docker-entrypoint-initdb.d
+# COPY ./init_db.sh /docker-entrypoint-initdb.d/init_db.sh
 
-RUN chmod a+x /docker-entrypoint-initdb.d/init_db.sh
+# RUN chmod a+x /docker-entrypoint-initdb.d/init_db.sh

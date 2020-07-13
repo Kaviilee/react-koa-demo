@@ -19,7 +19,7 @@ services:
     image: api
     container_name: api
     environment:
-      - DB_NAME=root
+      - DB_NAME=todolist
       - DB_USER=root
       - DB_PASSWORD=root
       - DB_HOST=db
@@ -30,6 +30,8 @@ services:
       - /usr/src/api/node_modules
     ports: 
       - '8080'
+    depends_on:
+      - "db"
     command:
       "npm run serve"
   db:
@@ -39,8 +41,9 @@ services:
     image: db
     container_name: db
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: root
+      - MYSQL_DATABASE=todolist
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root
     volumes:
       - mysqlstorage:/data/db
     # command: mysqld

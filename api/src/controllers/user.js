@@ -10,8 +10,12 @@ const getUserInfo = async (ctx) => {
 }
 
 const postUserAuth = async (ctx) => {
-    // console.log(ctx)
+    // console.log(ctx.request.body)
     const data = ctx.request.body
+    // ctx.body = {
+    //     success: true,
+    //     token: '123421312'
+    // }
     const userInfo = await user.getUserByName(data.name)
     console.log(userInfo)
 
