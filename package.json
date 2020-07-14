@@ -7,7 +7,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev:install": "docker-compose build",
+    "dev:build": "docker-compose build",
     "dev:up": "docker-compose -p react-demo up -d",
     "dev:down": "docker-compose -p react-demo down"
   }

@@ -45,7 +45,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=root
     volumes:
-      - mysqlstorage:/data/db
+      - ./sql/db-data:/var/lib/mysql:rw
     # command: mysqld
     # --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci #设置utf8字符集
     restart: always
@@ -62,6 +62,3 @@ services:
       - api:api
     ports:
       - '80:80' # Connect localhost 80 port to container 80 port
-
-volumes:
-    mysqlstorage:

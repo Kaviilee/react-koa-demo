@@ -1,10 +1,10 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 3307
+ Source Server         : 3306
  Source Server Type    : MySQL
  Source Server Version : 50714
- Source Host           : localhost:3307
+ Source Host           : localhost:3306
  Source Schema         : todolist
 
  Target Server Type    : MySQL
@@ -16,6 +16,9 @@
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+-- 导出 todolist 的数据库结构
+CREATE DATABASE IF NOT EXISTS `todolist` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `todolist`;
 
 -- ----------------------------
 -- Table structure for list
@@ -24,10 +27,10 @@ DROP TABLE IF EXISTS `list`;
 CREATE TABLE `list`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'list的id',
   `user_id` int(11) NULL DEFAULT NULL COMMENT '用户id',
-  `content` char(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL COMMENT 'list内容',
+  `content` char(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'list内容',
   `status` tinyint(1) NULL DEFAULT NULL COMMENT 'list的状态',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 11 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Fixed;
+) ENGINE = MyISAM AUTO_INCREMENT = 11 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Records of list
@@ -43,10 +46,10 @@ INSERT INTO `list` VALUES (9, 1, 'test21221', 0);
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
   `id` int(11) NOT NULL COMMENT '用户id',
-  `user_name` char(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL COMMENT '用户名字',
-  `password` char(128) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL COMMENT '用户密码',
+  `user_name` char(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户名字',
+  `password` char(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户密码',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Fixed;
+) ENGINE = MyISAM CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Records of user

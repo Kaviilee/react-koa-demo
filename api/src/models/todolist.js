@@ -15,6 +15,7 @@ const getTodolistById = async function(id) {
 }
 
 const addTodo = async function(data) {
+    console.log(data)
     await Todolist.create({
         user_id: data.id,
         content: data.content,
