@@ -4,9 +4,10 @@ ARG MYSQL_USER
 
 ENV MYSQL_ROOT_PASSWORD $MYSQL_ROOT_PASSWORD
 ENV MYSQL_USER $MYSQL_USER
-USER root
-ADD todolist.sql /docker-entrypoint-initdb.d/
+ENV WORK_PATH /usr/lcal/db
+ENV FILE_0 todolist.sql
 
-RUN chown -R mysql:mysql /docker-entrypoint-initdb.d/
+COPY ./todolist.sql ${WORK_PATH}
+COPY init_db.sh /docker-entrypoint-initdb.d/init_db.sh
 
-CMD ["mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+RUN chmod a+x /docker-entrypoint-initdb.d/init_db.sh
