@@ -137,8 +137,7 @@ const TodoList: React.FC = () => {
         } else {
             let obj = {
                 status: false,
-                content: value,
-                id: id
+                content: value
             }
             addTodo(obj)
         }
