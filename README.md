@@ -11,7 +11,7 @@ npm run dev:build # or yarn dev:build
 npm run dev:up # or yarn dev:up
 
 docker exec -it db bin/bash
-mysql -u$MYSQL_USER -r$MYSQL_ROOT_PASSWORD < docker-entrypoint-initdb.d/todolist.sql
+mysql -u$MYSQL_USER -r$MYSQL_ROOT_PASSWORD < ${WORK_PATH}/todolist.sql
 ```
 
 then open browser: `localhost`

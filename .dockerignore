@@ -1,2 +1,7 @@
 node_modules
-*.md
+README.md
+Dockfile
+.dockerignore
+dist
+docker-compose.yml
+.env
