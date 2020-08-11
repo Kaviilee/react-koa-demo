@@ -1,22 +1,36 @@
 import jwt from 'jsonwebtoken'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Tabs, Input, Button, message } from 'antd'
-import axios from '../axios'
-const { TabPane } = Tabs
-const { Search } = Input
+// import axios from '../axios'
+import _request from '~/utils/request'
+export const { TabPane } = Tabs
+export const { Search } = Input
 
-type Item = {
+export interface Item {
     content: string,
     id: number,
     status: number | boolean,
     user_id: number
 }
-type Props = {
-    itemInfo: Item,
-    index: number,
-    [key: string]: any
+
+export interface TodoItemProps {
+    itemInfo: Item;
+    index: number;
+    onFinish: (item: Item) => void;
+    onDelete: (item: Item) => void;
 }
-const TodoItem: React.SFC<Props> = (props) => {
+
+export interface FinishProps {
+    itemInfo: Item;
+    index: number;
+    onBack: (item: Item) => void;
+    // [key: string]: any
+}
+export type User = {
+    name: string
+    id: number
+}
+export const TodoItem: React.SFC<TodoItemProps> = (props) => {
 
     function handleFinish() {
         props.onFinish(props.itemInfo)
@@ -37,7 +51,7 @@ const TodoItem: React.SFC<Props> = (props) => {
         </div>
     )
 }
-const FinishedItem: React.SFC<Props> = (props) => {
+export const FinishedItem: React.SFC<FinishProps> = (props) => {
 
     function handleBack() {
         props.onBack(props.itemInfo)
@@ -65,20 +79,26 @@ const TodoList: React.FC = () => {
     const [activeKey, setActiveKey] = useState('todo')
     const [name, setName] = useState('')
     const [id, setId] = useState(0)
+    // const [user, setUser] = useState({} as User)
 
     useEffect(() => {
         const userInfo = getUserInfo()
-        setName(userInfo.name)
-        setId(userInfo.id)
+        if (userInfo) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            const { name, id } = userInfo
+            setName(name)
+            setId(id)
+        }
         if (id) getTodoList(id)
     }, [id])
 
-    function todoRender(data: Item[]) {
+    const todoRender = (data: Item[]) => {
         return data.map((item: Item, index: number) => {
-            return !item.status && <TodoItem key={index} index={index} itemInfo={item} onFinish={handleFinish} onDelete={handleDelete}></TodoItem>
+            return !item.status && <TodoItem key={index} index={index} itemInfo={item} onFinish={ (item) => handleFinish(item)} onDelete={handleDelete}></TodoItem>
         })
     }
-    function fininshRender(data: Item[]) {
+    const fininshRender = (data: Item[]) => {
         if (data.some((x: Item) => x.status)) {
             return data.map((item: Item, index: number) => {
                 return <FinishedItem key={index} index={index} itemInfo={item} onBack={handleBack}></FinishedItem>
@@ -88,22 +108,38 @@ const TodoList: React.FC = () => {
         }
     }
 
-    const handleDelete = ({ user_id, id }: { user_id: number, id: number }) => {
-        axios.delete(`/api/todo/${user_id}/${id}`).then(() => {
+    const handleDelete = async ({ user_id, id }: { user_id: number, id: number }) => {
+        try {
+            await _request(`/api/todo/${user_id}/${id}`, {
+                method: 'DELETE'
+            })
             message.info('任务删除')
             getTodoList(user_id)
-        }).catch(() => {
+        } catch (e) {
+            console.log(e)
             message.error('删除失败')
-        })
+        }
+        // .then((res) => {
+        //     console.log(res)
+        //     if (res.code === 204) {
+        //         message.info('任务删除')
+        //         getTodoList(user_id)
+        //     }
+        // }).catch(() => {
+        //     message.error('删除失败')
+        // })
     }
 
-    function handleFinish({ id, user_id, status }: { id: number, user_id: number, status: boolean }) {
+    const handleFinish = ({ id, user_id, status }: { id: number, user_id: number, status: boolean | number }) => {
         const obj = {
             id: id,
             user_id: user_id,
             status: !status
         }
-        axios.put('/api/todo', obj).then(() => {
+        _request('/api/todo', {
+            method: 'PUT',
+            body: JSON.stringify(obj)
+        }).then(() => {
             message.success('任务完成')
             getTodoList(user_id)
         }).catch(() => {
@@ -111,13 +147,16 @@ const TodoList: React.FC = () => {
         })
     }
 
-    function handleBack({ id, user_id, status }: { id: number, user_id: number, status: boolean }) {
+    const handleBack = ({ id, user_id, status }: { id: number, user_id: number, status?: boolean | number }) => {
         const obj = {
             id: id,
             user_id: user_id,
             status: !status
         }
-        axios.put('/api/todo', obj).then(() => {
+        _request('/api/todo', {
+            method: 'PUT',
+            body: JSON.stringify(obj)
+        }).then(() => {
             message.success('任务还原')
             getTodoList(user_id)
         }).catch(() => {
@@ -125,17 +164,17 @@ const TodoList: React.FC = () => {
         })
     }
 
-    function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target
         setTodos(value)
     }
 
-    function handleInput(value: string) {
+    const  handleInput = (value: string) => {
         // console.log(value)
         if (value === '') {
             return
         } else {
-            let obj = {
+            const obj = {
                 status: false,
                 content: value
             }
@@ -144,7 +183,7 @@ const TodoList: React.FC = () => {
         setTodos(value)
     }
 
-    function getUserInfo() {
+    const getUserInfo = () => {
         const token = sessionStorage.getItem('demo-token')
         if (token) {
             const decode = jwt.decode(token)
@@ -152,18 +191,29 @@ const TodoList: React.FC = () => {
         }
         return null
     }
-    function getTodoList(id: number) {
-        // const id = this.id
-        // console.log()
-        axios.get(`/api/todo/${id}`).then((res: any) => {
-            setList(res.data)
-        }).catch((e: any) => {
-            console.log(e.response)
-        })
+    const getTodoList = async (id: number) => {
+        try {
+            const data = await _request(`/api/todo/${id}`, {
+                method: 'GET'
+            })
+            setList(data)
+        } catch (error) {
+            console.log(error)
+        }
+        // _request(`/api/todo/${id}`, {
+        //     method: 'GET'
+        // }).then((res: any) => {
+        //     setList(res.data)
+        // }).catch((e: any) => {
+        //     console.log(e.response)
+        // })
     }
 
-    function addTodo(data: any) {
-        axios.post('/api/todo', data).then((res: any) => {
+    const addTodo = (data: any) => {
+        _request('/api/todo', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        }).then((res: any) => {
             message.success('任务添加')
             getTodoList(id)
         }).catch((error: any) => {

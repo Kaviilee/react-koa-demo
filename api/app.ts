@@ -23,6 +23,17 @@ createConnection({
     
     const app = new Koa();
     
+    app.use((ctx, next) => {
+        return next().catch(err => {
+            if (err.status === 401) {
+                ctx.status = 401;
+                ctx.body = "unauthorized";
+            } else {
+                throw err;
+            }
+        });
+    });
+    
     app.use(bodyParser());
     // Provides important security headers to make your app more secure
     app.use(helmet());
@@ -33,7 +44,7 @@ createConnection({
     // these routes are not protected by the JWT middleware
     app.use(userRouter.routes()).use(userRouter.allowedMethods());
 
-    app.use(jwt({ secret: config.jwtSecret }).unless({ path: [/^\/swagger-/] }));
+    app.use(jwt({ secret: config.jwtSecret }).unless({ path: [/^\/swagger-/, /\/auth\/login/] }));
 
     app.use(listRouter.routes()).use(listRouter.allowedMethods());
     

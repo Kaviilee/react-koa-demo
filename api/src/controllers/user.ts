@@ -31,6 +31,8 @@ export default class UserController {
         const userRepository: Repository<User> = getManager().getRepository(User);
 
         const data = ctx.request.body;
+        // const data = JSON.parse(datas);
+        console.log(data);
         const userInfo: User = await userRepository.findOne({
             where: {
                 user_name: data.name
@@ -39,9 +41,10 @@ export default class UserController {
 
         if (userInfo) {
             if (userInfo.password !== data.password) {
+                ctx.status = 400;
                 ctx.body = {
                     success: false,
-                    info: "wrong password!"
+                    message: "wrong password!"
                 };
             } else {
                 const userToken = {
@@ -58,9 +61,10 @@ export default class UserController {
                 };
             }
         } else {
+            ctx.status = 400;
             ctx.body = {
                 success: false,
-                info: "user is not exist!"
+                message: "user is not exist!"
             };
         }
     }

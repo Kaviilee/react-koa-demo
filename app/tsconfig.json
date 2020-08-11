@@ -1,25 +1,40 @@
 {
     "compilerOptions": {
-        "baseUrl": "./src",
+        "strict": true,
+        "module": "commonjs",
+        "target": "es5",
+        "experimentalDecorators": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "downlevelIteration": true,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitReturns": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "noUnusedLocals": false,
+        "baseUrl": "./",
         "outDir": "./dist/",
         "sourceMap": true,
         "noImplicitAny": true,
-        "module": "es6",
+        "moduleResolution": "Node",
         "allowSyntheticDefaultImports": true,
-        "target": "es6",
         "jsx": "react",
         "allowJs": true,
         "noEmit": true,
         "paths": {
             // "components/*": ["src/components/*"],
-            "@components/*": ["components/*"],
-            "@routes/*": ["routes/*"],
-            "~/*": ["/*"]
+            "@components/*": ["src/components/*"],
+            "@routes/*": ["src/routes/*"],
+            "~/*": ["./src/*"]
         },
     },
     "exclude": [
         "node_modules",
         "dist",
-        "antd"
+        // "antd"
+    ],
+    "include": [
+        "src/components",
+        "src/custom.d.ts"
     ]
 }

@@ -1,11 +1,10 @@
 import { resolve, join } from 'path';
 import { Configuration  } from 'webpack';
-import * as HtmlWebpackPlugin from 'html-webpack-plugin';
-import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-import * as CompressionWebpackPlugin from 'compression-webpack-plugin'
-import * as ProgressBarPlugin from 'progress-bar-webpack-plugin'
-// const CompressionWebpackPlugin = require（'compression-webpack-plugin')
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import CompressionWebpackPlugin from 'compression-webpack-plugin'
+import ProgressBarPlugin from 'progress-bar-webpack-plugin'
 
 const frontendDir = resolve(__dirname, '..', '..')
 
@@ -119,7 +118,8 @@ export const webpackConfig: Configuration = {
         new ProgressBarPlugin({
             format: 'build [:bar] :percent (:elapsed seconds)',
             clear: false,
-            width: 60
+            width: 60,
+            total: 100
         })
     ],
     optimization: {
