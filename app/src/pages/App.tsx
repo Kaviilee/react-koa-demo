@@ -3,10 +3,10 @@ import logo from '~/static/logo.svg'
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 // import routes from '~/routes'
-import Login from '../components/Login'
-import TodoList from '../components/TodoList'
+import Login from '@components/Login'
+import TodoList from '@components/TodoList'
 
-const App = () => {s
+const App = () => {
     return (
         <div className="App">
             <header className="App-header">

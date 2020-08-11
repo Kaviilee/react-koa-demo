@@ -37,4 +37,34 @@ const request = (url: string, config: Config): Promise<void | any> => {
     }).then((res: Response) => _parseJSON(res))
 }
 
+export const _post = (url: string, data?: Record<string, unknown>): Promise<void | any> => {
+    return  fetch(url, {
+        method: 'POST',
+        headers: configs.headers,
+        body: JSON.stringify(data)
+    }).then((res: Response) => _parseJSON(res))
+}
+
+export const _put = (url: string, data?: Record<string, unknown>): Promise<void | any> => {
+    return  fetch(url, {
+        method: 'PUT',
+        headers: configs.headers,
+        body: JSON.stringify(data)
+    }).then((res: Response) => _parseJSON(res))
+}
+
+export const _get = (url: string): Promise<void | any> => {
+    return fetch(url, {
+        method: 'GET',
+        headers: configs.headers
+    }).then((res: Response) => _parseJSON(res))
+}
+
+export const _delete= (url: string): Promise<void | any> => {
+    return fetch(url, {
+        method: 'DELETE',
+        headers: configs.headers
+    }).then((res: Response) => _parseJSON(res))
+}
+
 export default request

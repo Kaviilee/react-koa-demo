@@ -1,0 +1,13 @@
+{
+    "compilerOptions": { 
+      "esModuleInterop": true,
+      "moduleResolution": "node",
+      "baseUrl": ".",
+      "jsx": "react",
+      "paths": {
+        "@pages/*": ["pages/*"],
+        "@components/*": ["components/*"],
+        "~/*": ["./*"]
+      }
+    }
+  }

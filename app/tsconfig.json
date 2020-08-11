@@ -20,13 +20,7 @@
         "allowSyntheticDefaultImports": true,
         "jsx": "react",
         "allowJs": true,
-        "noEmit": true,
-        "paths": {
-            // "components/*": ["src/components/*"],
-            "@components/*": ["src/components/*"],
-            "@routes/*": ["src/routes/*"],
-            "~/*": ["./src/*"]
-        },
+        "noEmit": true
     },
     "exclude": [
         "node_modules",
