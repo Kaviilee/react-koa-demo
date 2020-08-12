@@ -21,7 +21,7 @@ export const webpackConfig: Configuration = {
         alias: {
             '~': resolve(frontendDir, "src"),
             "@components": resolve(frontendDir, "src/components"),
-            "@routes": resolve(frontendDir, "src/routes")
+            "@pages": resolve(frontendDir, "src/pages")
         }
     },
     module: {
@@ -30,7 +30,7 @@ export const webpackConfig: Configuration = {
                 test: /\.ts(x?)$/,
                 loader: 'ts-loader',
                 options: {
-                    transpileOnly: true
+                    transpileOnly: false
                 }
             },
             {
@@ -146,3 +146,5 @@ export const webpackConfig: Configuration = {
         }
     }
 }
+
+export default webpackConfig;

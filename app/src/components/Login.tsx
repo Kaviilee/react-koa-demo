@@ -24,11 +24,11 @@ const Login: React.FC<LoginProps> = () => {
             name: name,
             password: password
         }
-        _request('/auth/user', {
+        _request<{ success: boolean, token: string, message?: string }>('/auth/user', {
             method: 'POST',
             body: JSON.stringify(info)
         })
-          .then((res: any) => {
+          .then((res) => {
             if (res.success) {
                 sessionStorage.setItem('demo-token', res.token)
                 message.success('登录成功')
@@ -39,17 +39,7 @@ const Login: React.FC<LoginProps> = () => {
                 message.error(res.message  || '请求错误！')
                 sessionStorage.removeItem('demo-token')
             }
-            // if (res.data.success) {
-            //   sessionStorage.setItem('demo-token', res.data.token)
-            //   message.success('登录成功')
-            //   history.push({
-            //       pathname: '/todo'
-            //   })
-            // } else {
-            //   message.error(res.data.info)
-            //   sessionStorage.setItem('demo-token', null)
-            // }
-          }).catch((err: any) => {
+          }).catch((err) => {
             message.error(err.message  || '请求错误！')
             console.log(err)
             sessionStorage.removeItem('demo-token')

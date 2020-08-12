@@ -1,5 +1,5 @@
 {
-    "compilerOptions": { 
+    "compilerOptions": {
       "esModuleInterop": true,
       "moduleResolution": "node",
       "baseUrl": ".",
@@ -9,5 +9,8 @@
         "@components/*": ["components/*"],
         "~/*": ["./*"]
       }
-    }
+    },
+    "exclude": [
+        "antd"
+    ]
   }

@@ -7,7 +7,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "start": "cross-env NODE_ENV=develop webpack-dev-server --config config/webpack/config.js",
+    "start": "cross-env NODE_ENV=develop webpack-dev-server --config config/webpack/webpack.dev.config.ts",
     "build": "webpack --config config/webpack/config.js",
     "dev": "webpack-dev-server --config config/webpack/config.js --port 3000 --host=0.0.0.0"
   },

@@ -1,10 +1,9 @@
 import jwt from 'jsonwebtoken'
 import React, { useState, useEffect } from 'react'
 import { Tabs, Input, Button, message } from 'antd'
-// import axios from '../axios'
 import _request from '~/utils/request'
-export const { TabPane } = Tabs
-export const { Search } = Input
+const { TabPane } = Tabs
+const { Search } = Input
 
 export interface Item {
     content: string,
@@ -13,29 +12,30 @@ export interface Item {
     user_id: number
 }
 
-export interface TodoItemProps {
+interface TodoItemProps {
     itemInfo: Item;
     index: number;
     onFinish: (item: Item) => void;
     onDelete: (item: Item) => void;
 }
 
-export interface FinishProps {
+interface FinishProps {
     itemInfo: Item;
     index: number;
     onBack: (item: Item) => void;
-    // [key: string]: any
 }
-export type User = {
+
+type User = {
     name: string
     id: number
 }
-export const TodoItem: React.SFC<TodoItemProps> = (props) => {
 
-    function handleFinish() {
+const TodoItem: React.FC<TodoItemProps> = props => {
+
+    const handleFinish = () => {
         props.onFinish(props.itemInfo)
     }
-    function handleDelete() {
+    const handleDelete = () => {
         props.onDelete(props.itemInfo)
     }
 
@@ -51,9 +51,10 @@ export const TodoItem: React.SFC<TodoItemProps> = (props) => {
         </div>
     )
 }
-export const FinishedItem: React.SFC<FinishProps> = (props) => {
 
-    function handleBack() {
+const FinishedItem: React.FC<FinishProps> = props => {
+
+    const handleBack = () => {
         props.onBack(props.itemInfo)
     }
 
@@ -73,6 +74,7 @@ export const FinishedItem: React.SFC<FinishProps> = (props) => {
     }
 
 }
+
 const TodoList: React.FC = () => {
     const [list, setList] = useState([])
     const [todos, setTodos] = useState('')
@@ -193,7 +195,7 @@ const TodoList: React.FC = () => {
     }
     const getTodoList = async (id: number) => {
         try {
-            const data = await _request(`/api/todo/${id}`, {
+            const data = await _request<Item[]>(`/api/todo/${id}`, {
                 method: 'GET'
             })
             setList(data)

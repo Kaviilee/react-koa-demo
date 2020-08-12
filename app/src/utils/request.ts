@@ -24,7 +24,7 @@ const _parseJSON = (response: Response) => {
         return text ? JSON.parse(text) : {}
     })
 }
-const request = (url: string, config: Config): Promise<void | any> => {
+const request = <T>(url: string, config: Config): Promise<T> => {
     // console.log(url, config)
     return fetch(url, {
         body: config.body,
@@ -34,15 +34,18 @@ const request = (url: string, config: Config): Promise<void | any> => {
         mode: config.mode,
         redirect: config.redirect,
         referrer: config.referrer
-    }).then((res: Response) => _parseJSON(res))
+    }).then((res: Response) => _parseJSON(res) as Promise<T>)
+        .catch((error: Error) => {
+            throw error
+        })
 }
 
-export const _post = (url: string, data?: Record<string, unknown>): Promise<void | any> => {
+export const _post = <T>(url: string, data?: Record<string, unknown>): Promise<T> => {
     return  fetch(url, {
         method: 'POST',
         headers: configs.headers,
         body: JSON.stringify(data)
-    }).then((res: Response) => _parseJSON(res))
+    }).then((res: Response) => _parseJSON(res) as Promise<T>)
 }
 
 export const _put = (url: string, data?: Record<string, unknown>): Promise<void | any> => {
@@ -53,11 +56,11 @@ export const _put = (url: string, data?: Record<string, unknown>): Promise<void 
     }).then((res: Response) => _parseJSON(res))
 }
 
-export const _get = (url: string): Promise<void | any> => {
+export const _get = <T>(url: string): Promise<T> => {
     return fetch(url, {
         method: 'GET',
         headers: configs.headers
-    }).then((res: Response) => _parseJSON(res))
+    }).then((res: Response) => _parseJSON(res) as Promise<T>)
 }
 
 export const _delete= (url: string): Promise<void | any> => {

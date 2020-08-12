@@ -2,7 +2,10 @@
     "root": true,
     "parser": "@typescript-eslint/parser",
     "plugins": ["@typescript-eslint"],
-    "extends": ["plugin:@typescript-eslint/recommended"],
+    "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:react/recommended"
+    ],
     "parserOptions": {
       "ecmaVersion": 2018,
       "sourceType": "module"
