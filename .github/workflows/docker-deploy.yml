@@ -14,8 +14,8 @@ jobs:
               run: docker-compose -f docker-compose.ci.yml -p react-demo up -d
             - name: Check running containers
               run: docker ps -a
-            # - name: Check logs
-            #   run: docker logs $(docker ps -a)
+            - name: Check logs
+              run: docker logs jekyll
             # - name: Run test suite
             #   run: docker exec backend pytest --skip-auth
 
