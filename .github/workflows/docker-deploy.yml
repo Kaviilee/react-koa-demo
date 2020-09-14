@@ -15,7 +15,7 @@ jobs:
             - name: Check running containers
               run: docker ps -a
             - name: Check logs
-              run: docker logs jekyll
+              run: docker logs react-demo_jekyll_1
             # - name: Run test suite
             #   run: docker exec backend pytest --skip-auth
 
