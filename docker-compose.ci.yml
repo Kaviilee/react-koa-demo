@@ -66,8 +66,8 @@ services:
   jekyll:
     image: starefossen/github-pages
     environment:
-        # 768b331652cc75c057c9f1ef58d461dbdd0bb134
-        - "JEKYLL_GITHUB_TOKEN:${DOCKER_ACCESS}"
+        # 768b331652cc75c057c9f1ef58d461dbdd0bb134 DOCKER_ACCESS
+        - "JEKYLL_GITHUB_TOKEN:768b331652cc75c057c9f1ef58d461dbdd0bb134"
     ports:
         - "4000:4000"
     volumes:
