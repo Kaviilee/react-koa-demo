@@ -1,0 +1,75 @@
+version: '3.4'
+
+services:
+  app:
+    # 会自动读取对应的Dockerfile
+    build: ./app
+    image: app
+    container_name: app
+    volumes: # For dev server to use our local files
+      - ./app:/usr/src/app
+      - usr/src/app/node_modules
+    ports: 
+      - '3000:3000'
+    # restart: always
+    command:
+      "npm run dev"
+  api:
+    build: ./api
+    image: api
+    container_name: api
+    environment:
+      - DB_NAME=todolist
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_HOST=db
+      - DB_PORT=3306
+      - NODE_ENV=development
+    volumes:
+      - ./api:/usr/src/api
+      - /usr/src/api/node_modules
+    ports: 
+      - '8080'
+    depends_on:
+      - "db"
+    command:
+      "npm run serve"
+  db:
+    build: ./sql
+    env_file: 
+      - ./sql/mysql.env
+    image: db
+    container_name: db
+    environment:
+      - MYSQL_DATABASE=todolist
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root
+    volumes:
+      - ./sql/db-data:/var/lib/mysql:rw
+    # command: mysqld
+    # --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci #设置utf8字符集
+    restart: always
+    ports:
+      - '3306:3306'
+  server:
+    build: ./nginx
+    image: server
+    container_name: server
+    volumes: 
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    links: 
+      - app:app
+      - api:api
+    ports:
+      - '80:80' # Connect localhost 80 port to container 80 port
+
+  jekyll:
+    image: starefossen/github-pages
+    environment:
+        # 768b331652cc75c057c9f1ef58d461dbdd0bb134
+        - "JEKYLL_GITHUB_TOKEN:${DOCKER_ACCESS}"
+    ports:
+        - "4000:4000"
+    volumes:
+        - ./:/usr/src/app
+    tty: true

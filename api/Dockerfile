@@ -11,7 +11,7 @@ ENV DB_PORT ${DB_PORT}
 WORKDIR ${APP_ROOT}
 
 COPY package.json ${APP_ROOT}
-COPY package-lock.json ${APP_ROOT}
+# COPY package-lock.json ${APP_ROOT}
 
 # RUN npm install -g cnpm --registry=https://registry.npm.taobao.org \
 # && cnpm install
