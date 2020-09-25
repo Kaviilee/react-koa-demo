@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { FC, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Input, Button, message } from 'antd';
 import _request from '~/utils/request'
@@ -12,7 +12,7 @@ export interface LoginProps {
     handleSubmit?: (event: React.MouseEvent) => void;
 }
 
-const Login: React.FC<LoginProps> = () => {
+const Login: FC<LoginProps> = () => {
     const history = useHistory()
     // const location = useLocation()
 
@@ -24,10 +24,7 @@ const Login: React.FC<LoginProps> = () => {
             name: name,
             password: password
         }
-        _request<{ success: boolean, token: string, message?: string }>('/auth/user', {
-            method: 'POST',
-            body: JSON.stringify(info)
-        })
+        _request<{ success: boolean, token: string, message?: string }>('post' ,'/auth/user', JSON.stringify(info))
           .then((res) => {
             if (res.success) {
                 sessionStorage.setItem('demo-token', res.token)
@@ -40,7 +37,7 @@ const Login: React.FC<LoginProps> = () => {
                 sessionStorage.removeItem('demo-token')
             }
           }).catch((err) => {
-            message.error(err.message  || '请求错误！')
+            message.error(err.body || '请求错误！')
             console.log(err)
             sessionStorage.removeItem('demo-token')
           })

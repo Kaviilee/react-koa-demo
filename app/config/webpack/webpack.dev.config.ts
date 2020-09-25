@@ -1,5 +1,6 @@
 import { resolve, join } from 'path';
-import { Configuration  } from 'webpack';
+import { Configuration as WebpackConfiguration } from "webpack";
+import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
@@ -7,6 +8,10 @@ import CompressionWebpackPlugin from 'compression-webpack-plugin'
 import ProgressBarPlugin from 'progress-bar-webpack-plugin'
 
 const frontendDir = resolve(__dirname, '..', '..')
+
+interface Configuration extends WebpackConfiguration {
+    devServer?: WebpackDevServerConfiguration;
+  }
 
 export const webpackConfig: Configuration = {
     mode: 'development',

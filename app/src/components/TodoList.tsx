@@ -1,86 +1,22 @@
 import jwt from 'jsonwebtoken'
-import React, { useState, useEffect } from 'react'
-import { Tabs, Input, Button, message } from 'antd'
+import React, { FC, useState, useEffect, ChangeEvent } from 'react'
+import { Tabs, Input, Button, message, List } from 'antd'
 import _request from '~/utils/request'
+import { useHistory } from 'react-router-dom'
+
 const { TabPane } = Tabs
 const { Search } = Input
 
-export interface Item {
-    content: string,
-    id: number,
-    status: number | boolean,
-    user_id: number
-}
+import { Item, todoProps } from './index.d'
 
-interface TodoItemProps {
-    itemInfo: Item;
-    index: number;
-    onFinish: (item: Item) => void;
-    onDelete: (item: Item) => void;
-}
-
-interface FinishProps {
-    itemInfo: Item;
-    index: number;
-    onBack: (item: Item) => void;
-}
-
-type User = {
-    name: string
-    id: number
-}
-
-const TodoItem: React.FC<TodoItemProps> = props => {
-
-    const handleFinish = () => {
-        props.onFinish(props.itemInfo)
-    }
-    const handleDelete = () => {
-        props.onDelete(props.itemInfo)
-    }
-
-    return (
-        <div className="item">
-            <span className="text">
-                { props.index + 1 }. { props.itemInfo.content }
-            </span>
-            <span className="pullRight">
-                <Button size="small" type="primary" style={{ marginRight: '6px' }} onClick={handleFinish}>完成</Button>
-                <Button size="small" danger onClick={handleDelete}>删除</Button>
-            </span>
-        </div>
-    )
-}
-
-const FinishedItem: React.FC<FinishProps> = props => {
-
-    const handleBack = () => {
-        props.onBack(props.itemInfo)
-    }
-
-    if (props.itemInfo.status) {
-        return (
-            <div className="item">
-                <span className="text finished">
-                    {props.index + 1}. {props.itemInfo.content}
-                </span>
-                <span className="pullRight">
-                    <Button size="small" type="primary" onClick={handleBack}>还原</Button>
-                </span>
-            </div>
-        )
-    } else {
-        return null
-    }
-
-}
-
-const TodoList: React.FC = () => {
+const TodoList: FC = () => {
     const [list, setList] = useState([])
     const [todos, setTodos] = useState('')
     const [activeKey, setActiveKey] = useState('todo')
     const [name, setName] = useState('')
     const [id, setId] = useState(0)
+
+    const history = useHistory()
     // const [user, setUser] = useState({} as User)
 
     useEffect(() => {
@@ -92,44 +28,64 @@ const TodoList: React.FC = () => {
             setName(name)
             setId(id)
         }
-        if (id) getTodoList(id)
+        getTodoList(id)
     }, [id])
 
     const todoRender = (data: Item[]) => {
-        return data.map((item: Item, index: number) => {
-            return !item.status && <TodoItem key={index} index={index} itemInfo={item} onFinish={ (item) => handleFinish(item)} onDelete={handleDelete}></TodoItem>
-        })
+        const todos = data.filter(x => !x.status)
+        return (
+            <List
+                itemLayout="horizontal"
+                dataSource={todos}
+                renderItem={
+                    (item, index) => (
+                        <List.Item
+                            actions={
+                                [
+                                    <Button key="finish" size="small" type="primary" onClick={() => handleFinish(item)}>完成</Button>,
+                                    <Button key="delete" size="small" danger onClick={() => handleDelete}>删除</Button>
+                                ]
+                            }
+                        >
+                            <div>{ index + 1 }. { item.content }</div>
+                        </List.Item>
+                    )
+                }
+            ></List>
+        )
     }
     const fininshRender = (data: Item[]) => {
-        if (data.some((x: Item) => x.status)) {
-            return data.map((item: Item, index: number) => {
-                return <FinishedItem key={index} index={index} itemInfo={item} onBack={handleBack}></FinishedItem>
-            })
-        } else {
-            return <div>无已完成事项</div>
-        }
+        const finished = data.filter(x => x.status)
+        return (
+            <List
+                itemLayout="horizontal"
+                dataSource={finished}
+                renderItem={
+                    (item, index) => (
+                        <List.Item
+                            actions={
+                                [
+                                    <Button key="back" size="small" type="primary" onClick={() => handleBack(item)}>还原</Button>
+                                ]
+                            }
+                        >
+                            <div>{ index + 1 }. { item.content }</div>
+                        </List.Item>
+                    )
+                }
+            ></List>
+        )
     }
 
     const handleDelete = async ({ user_id, id }: { user_id: number, id: number }) => {
         try {
-            await _request(`/api/todo/${user_id}/${id}`, {
-                method: 'DELETE'
-            })
+            await _request('delete', `/api/todo/${user_id}/${id}`)
             message.info('任务删除')
             getTodoList(user_id)
         } catch (e) {
             console.log(e)
             message.error('删除失败')
         }
-        // .then((res) => {
-        //     console.log(res)
-        //     if (res.code === 204) {
-        //         message.info('任务删除')
-        //         getTodoList(user_id)
-        //     }
-        // }).catch(() => {
-        //     message.error('删除失败')
-        // })
     }
 
     const handleFinish = ({ id, user_id, status }: { id: number, user_id: number, status: boolean | number }) => {
@@ -138,10 +94,7 @@ const TodoList: React.FC = () => {
             user_id: user_id,
             status: !status
         }
-        _request('/api/todo', {
-            method: 'PUT',
-            body: JSON.stringify(obj)
-        }).then(() => {
+        _request('put', '/api/todo', JSON.stringify(obj)).then(() => {
             message.success('任务完成')
             getTodoList(user_id)
         }).catch(() => {
@@ -155,10 +108,7 @@ const TodoList: React.FC = () => {
             user_id: user_id,
             status: !status
         }
-        _request('/api/todo', {
-            method: 'PUT',
-            body: JSON.stringify(obj)
-        }).then(() => {
+        _request('put', '/api/todo', JSON.stringify(obj)).then(() => {
             message.success('任务还原')
             getTodoList(user_id)
         }).catch(() => {
@@ -166,13 +116,12 @@ const TodoList: React.FC = () => {
         })
     }
 
-    const  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target
         setTodos(value)
     }
 
-    const  handleInput = (value: string) => {
-        // console.log(value)
+    const handleInput = (value: string) => {
         if (value === '') {
             return
         } else {
@@ -195,30 +144,21 @@ const TodoList: React.FC = () => {
     }
     const getTodoList = async (id: number) => {
         try {
-            const data = await _request<Item[]>(`/api/todo/${id}`, {
-                method: 'GET'
-            })
+            const data = await _request<Item[]>('get', `/api/todo/${id}`)
             setList(data)
         } catch (error) {
+            // if (error.status === 401) {
+            //     history.push('/')
+            // }
             console.log(error)
         }
-        // _request(`/api/todo/${id}`, {
-        //     method: 'GET'
-        // }).then((res: any) => {
-        //     setList(res.data)
-        // }).catch((e: any) => {
-        //     console.log(e.response)
-        // })
     }
 
-    const addTodo = (data: any) => {
-        _request('/api/todo', {
-            method: 'POST',
-            body: JSON.stringify(data)
-        }).then((res: any) => {
+    const addTodo = (data: todoProps) => {
+        _request('post', '/api/todo', JSON.stringify(data)).then(() => {
             message.success('任务添加')
             getTodoList(id)
-        }).catch((error: any) => {
+        }).catch((error) => {
             console.log(error.response)
         })
     }
