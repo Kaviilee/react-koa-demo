@@ -1,8 +1,6 @@
-import jwt from 'jsonwebtoken'
 import React, { FC, useState, useEffect, ChangeEvent } from 'react'
 import { Tabs, Input, Button, message, List } from 'antd'
 import _request from '~/utils/request'
-import { useHistory } from 'react-router-dom'
 
 const { TabPane } = Tabs
 const { Search } = Input
@@ -10,26 +8,18 @@ const { Search } = Input
 import { Item, todoProps } from './index.d'
 
 const TodoList: FC = () => {
-    const [list, setList] = useState([])
+    const [list, setList] = useState<Item[]>([])
     const [todos, setTodos] = useState('')
     const [activeKey, setActiveKey] = useState('todo')
     const [name, setName] = useState('')
-    const [id, setId] = useState(0)
-
-    const history = useHistory()
     // const [user, setUser] = useState({} as User)
 
     useEffect(() => {
-        const userInfo = getUserInfo()
-        if (userInfo) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            const { name, id } = userInfo
-            setName(name)
-            setId(id)
-        }
-        getTodoList(id)
-    }, [id])
+        const user = localStorage.getItem('user')
+        const userInfo = JSON.parse(user)
+        if (userInfo) setName(userInfo.name)
+        getTodoList()
+    }, [])
 
     const todoRender = (data: Item[]) => {
         const todos = data.filter(x => !x.status)
@@ -77,40 +67,38 @@ const TodoList: FC = () => {
         )
     }
 
-    const handleDelete = async ({ user_id, id }: { user_id: number, id: number }) => {
+    const handleDelete = async ({ id }: { id: number }) => {
         try {
-            await _request('delete', `/api/todo/${user_id}/${id}`)
+            await _request('delete', `/api/todo/${id}`)
             message.info('任务删除')
-            getTodoList(user_id)
+            getTodoList()
         } catch (e) {
             console.log(e)
             message.error('删除失败')
         }
     }
 
-    const handleFinish = ({ id, user_id, status }: { id: number, user_id: number, status: boolean | number }) => {
+    const handleFinish = ({ id, status }: { id: number, status: boolean | number }) => {
         const obj = {
             id: id,
-            user_id: user_id,
             status: !status
         }
         _request('put', '/api/todo', JSON.stringify(obj)).then(() => {
             message.success('任务完成')
-            getTodoList(user_id)
+            getTodoList()
         }).catch(() => {
             message.error('任务完成失败')
         })
     }
 
-    const handleBack = ({ id, user_id, status }: { id: number, user_id: number, status?: boolean | number }) => {
+    const handleBack = ({ id, status }: { id: number, status?: boolean | number }) => {
         const obj = {
             id: id,
-            user_id: user_id,
             status: !status
         }
         _request('put', '/api/todo', JSON.stringify(obj)).then(() => {
             message.success('任务还原')
-            getTodoList(user_id)
+            getTodoList()
         }).catch(() => {
             message.error('任务还原失败')
         })
@@ -134,22 +122,11 @@ const TodoList: FC = () => {
         setTodos(value)
     }
 
-    const getUserInfo = () => {
-        const token = sessionStorage.getItem('demo-token')
-        if (token) {
-            const decode = jwt.decode(token)
-            return decode
-        }
-        return null
-    }
-    const getTodoList = async (id: number) => {
+    const getTodoList = async () => {
         try {
-            const data = await _request<Item[]>('get', `/api/todo/${id}`)
+            const data = await _request<Item[]>('get', `/api/todo`)
             setList(data)
         } catch (error) {
-            // if (error.status === 401) {
-            //     history.push('/')
-            // }
             console.log(error)
         }
     }
@@ -157,7 +134,7 @@ const TodoList: FC = () => {
     const addTodo = (data: todoProps) => {
         _request('post', '/api/todo', JSON.stringify(data)).then(() => {
             message.success('任务添加')
-            getTodoList(id)
+            getTodoList()
         }).catch((error) => {
             console.log(error.response)
         })

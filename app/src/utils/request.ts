@@ -1,4 +1,5 @@
 import { message } from 'antd'
+// import axios, { AxiosRequestConfig, AxiosResponse, AxiosPromise, Method } from 'axios'
 const _parseJSON = (response: Response) => {
     if (response.ok) {
         return response.text().then((text) => {
@@ -38,34 +39,59 @@ const request = <T>(method: string, url: string, body?: ArrayBuffer | ArrayBuffe
     })
 }
 
-export const _post = <T>(url: string, data?: Record<string, unknown>): Promise<T> => {
-    return  fetch(url, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(data)
-    }).then((res: Response) => _parseJSON(res) as Promise<T>)
-}
+// const Axios = axios.create()
 
-export const _put = (url: string, data?: Record<string, unknown>): Promise<void | any> => {
-    return  fetch(url, {
-        method: 'PUT',
-        headers: headers,
-        body: JSON.stringify(data)
-    }).then((res: Response) => _parseJSON(res))
-}
+// const token = localStorage.getItem('demo-token')
+// if (token) {
+//     Axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+// }
 
-export const _get = <T>(url: string): Promise<T> => {
-    return fetch(url, {
-        method: 'GET',
-        headers: headers
-    }).then((res: Response) => _parseJSON(res) as Promise<T>)
-}
+// Axios.interceptors.request.use((config: AxiosRequestConfig) => {
+//     return config
+// }, (error) => {
+//     return Promise.reject(error)
+// })
 
-export const _delete= (url: string): Promise<void | any> => {
-    return fetch(url, {
-        method: 'DELETE',
-        headers: headers
-    }).then((res: Response) => _parseJSON(res))
-}
+// Axios.interceptors.response.use((response: AxiosResponse) => {
+//     return response
+// }, error => {
+//     if (error.response) {
+//         switch (error.response.status) {
+//             case 401: {
+//                 localStorage.removeItem('demo-token')
+//                 window.location.href = '/'
+//                 break
+//             }
+//             default:
+//         }
+//     }
+
+// })
+
+// const request = <T>(method: Method, url: string, data?: any, params?: any): AxiosPromise<T> => {
+//     console.log(data, params)
+//     return Axios({
+//         method,
+//         url,
+//         data: data && undefined,
+//         params: params && undefined
+//     })
+// }
+
+// export const _get = <T>(url: string, params?: unknown): AxiosPromise<T> => {
+//     return Axios.get(url, params)
+// }
+
+// export const _delete = <T>(url: string, params?: unknown): AxiosPromise<T> => {
+//     return Axios.get(url, params)
+// }
+
+// export const _post = <T>(url: string, data?: unknown): AxiosPromise<T> => {
+//     return Axios.post(url, data)
+// }
+
+// export const _put = <T>(url: string, data?: unknown): AxiosPromise<T> => {
+//     return Axios.put(url, data)
+// }
 
 export default request

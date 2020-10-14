@@ -3,11 +3,6 @@ import { useHistory } from 'react-router-dom'
 import { Input, Button, message } from 'antd';
 import _request from '~/utils/request'
 
-export type User = {
-    name: string,
-    password: string
-}
-
 export interface LoginProps {
     handleSubmit?: (event: React.MouseEvent) => void;
 }
@@ -19,7 +14,7 @@ const Login: FC<LoginProps> = () => {
     const [name, setName] = useState('')
     const [password, setPassword] = useState('')
 
-    const handleSubmit = (event: React.MouseEvent) => {
+    const handleSubmit = async(event: React.MouseEvent) => {
         const info = {
             name: name,
             password: password

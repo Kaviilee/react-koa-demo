@@ -7,7 +7,7 @@ export class List {
     id: number;
 
     @Column()
-    user_id: number;
+    userId: number;
 
     @Column({
         length: 500

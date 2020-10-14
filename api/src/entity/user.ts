@@ -10,13 +10,16 @@ export class User {
         length: 80
     })
     @Length(3, 80)
-    user_name: string
+    userName: string
 
     @Column({
         length: 128
     })
     @Length(6, 128)
     password: string
+
+    @Column()
+    token?: string
 }
 
 export const userSchema = {

@@ -7,6 +7,8 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import CompressionWebpackPlugin from 'compression-webpack-plugin'
 import ProgressBarPlugin from 'progress-bar-webpack-plugin'
 
+// const { ESBuildPlugin } = require('esbuild-loader')
+
 const frontendDir = resolve(__dirname, '..', '..')
 
 interface Configuration extends WebpackConfiguration {
@@ -38,6 +40,14 @@ export const webpackConfig: Configuration = {
                     transpileOnly: false
                 }
             },
+            // {
+            //     test: /\.ts(x?)$/,
+            //     loader: 'esbuild-loader',
+            //     options: {
+            //         loader: 'tsx',
+            //         target: 'es2015'
+            //     }
+            // },
             {
                 test: /\.css$/,
                 use: [
@@ -125,7 +135,8 @@ export const webpackConfig: Configuration = {
             clear: false,
             width: 60,
             total: 100
-        })
+        }),
+        // new ESBuildPlugin()
     ],
     optimization: {
         splitChunks: { // 提取公共代码
