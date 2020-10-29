@@ -9,6 +9,8 @@ import ProgressBarPlugin from 'progress-bar-webpack-plugin'
 
 // const { ESBuildPlugin } = require('esbuild-loader')
 
+const isLoal = process.env.ENV === 'local'
+
 const frontendDir = resolve(__dirname, '..', '..')
 
 interface Configuration extends WebpackConfiguration {
@@ -37,7 +39,7 @@ export const webpackConfig: Configuration = {
                 test: /\.ts(x?)$/,
                 loader: 'ts-loader',
                 options: {
-                    transpileOnly: false
+                    transpileOnly: true
                 }
             },
             // {
@@ -162,5 +164,20 @@ export const webpackConfig: Configuration = {
         }
     }
 }
+
+isLoal && Object.assign(webpackConfig.devServer, {
+    // public: '/',
+    port: 8081,
+    proxy: {
+        '/auth': {
+            target: 'http://localhost:8080',
+            changeOrigin: true
+        },
+        '/api': {
+            target: 'http://localhost:8080',
+            changeOrigin: true
+        }
+    },
+})
 
 export default webpackConfig;
