@@ -49,3 +49,28 @@
 .Account {
   margin-bottom: 6px;
 }
+
+
+.message-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 1050;
+}
+
+.message-container .message {
+    pointer-events: none;
+    text-align: center;
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+.message-content {
+    display: inline-flex;
+    background: #fff;
+    box-shadow: 0 .5rem 1rem rgba(black, .15);
+    padding: 0.75rem
+}
+.message-content .icon {
+    margin-right: 0.5rem;
+}

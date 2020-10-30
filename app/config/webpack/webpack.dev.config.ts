@@ -69,7 +69,7 @@ export const webpackConfig: Configuration = {
             },
             {
                 test: /\.less$/,
-                loader: 'style!css!less!postcss'
+                loader: 'css-loader!less-loader!postcss-loader'
             },
             {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
