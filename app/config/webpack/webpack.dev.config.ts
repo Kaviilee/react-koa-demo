@@ -7,8 +7,6 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import CompressionWebpackPlugin from 'compression-webpack-plugin'
 import ProgressBarPlugin from 'progress-bar-webpack-plugin'
 
-// const { ESBuildPlugin } = require('esbuild-loader')
-
 const isLoal = process.env.ENV === 'local'
 
 const frontendDir = resolve(__dirname, '..', '..')
@@ -42,14 +40,6 @@ export const webpackConfig: Configuration = {
                     transpileOnly: true
                 }
             },
-            // {
-            //     test: /\.ts(x?)$/,
-            //     loader: 'esbuild-loader',
-            //     options: {
-            //         loader: 'tsx',
-            //         target: 'es2015'
-            //     }
-            // },
             {
                 test: /\.css$/,
                 use: [
@@ -72,11 +62,14 @@ export const webpackConfig: Configuration = {
                         sourceMap: true,
                       },
                     },
+                    {
+                        loader: 'postcss-loader'
+                    }
                 ],
             },
             {
                 test: /\.less$/,
-                loader: 'less-loader'
+                loader: 'style!css!less!postcss'
             },
             {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -98,17 +91,6 @@ export const webpackConfig: Configuration = {
         disableHostCheck: true,
         inline: true,
         hot: true,
-        // public: '/',
-        // proxy: {
-        //     '/auth': {
-        //         target: 'http://localhost:8080',
-        //         changeOrigin: true
-        //     },
-        //     '/api': {
-        //         target: 'http://localhost:8080',
-        //         changeOrigin: true
-        //     }
-        // },
         watchOptions: {
             aggregateTimeout: 300,
             poll: 1000,
