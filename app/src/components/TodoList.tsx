@@ -1,5 +1,6 @@
 import React, { FC, useState, useEffect, ChangeEvent } from 'react'
-import { Tabs, Input, Button, message, List } from 'antd'
+import { Tabs, Input, Button, List } from 'antd'
+import message from '@components/Message'
 import _request from '~/utils/request'
 
 const { TabPane } = Tabs

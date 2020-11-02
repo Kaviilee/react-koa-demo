@@ -1,9 +1,10 @@
 import React, { FC } from 'react';
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
-import classnames from 'classnames'
+import { faCheckCircle, faTimesCircle, faInfoCircle, faExclamationCircle, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import classNames from 'classnames'
 
-export type MessageType = 'success' | 'error' | 'info' | 'warning' | 'warn' | 'loading';
+export type MessageType = 'success' | 'error' | 'info' | 'warning' | 'warn';
 
 export type ThemeType = 'primary' | 'secondary' | 'success' | 'info' | 'error' | 'warning' | 'warn' | 'light' | 'dark';
 
@@ -19,29 +20,29 @@ export interface IconProps extends FontAwesomeIconProps {
 
 const Message: FC<MessageProps> = props => {
     const { text, type } = props
+    // console.log(props)
     const renderIcon = (messageType: MessageType) => {
-        console.log(messageType)
         let messageIcon: IconProp;
 
-        switch(messageIcon) {
+        switch(messageType) {
             case 'success':
-                messageIcon = 'check-circle';
+                messageIcon = faCheckCircle;
                 break;
             case 'error':
-                messageIcon = 'times-circle';
+                messageIcon = faTimesCircle;
                 break;
             case 'info':
-                messageIcon = 'info-circle';
+                messageIcon = faInfoCircle;
                 break;
             case 'warning':
             case 'warn':
-                messageIcon = 'exclamation-circle';
+                messageIcon = faExclamationCircle;
                 break;
             case 'loading':
-                messageIcon = 'spinner-third';
+                messageIcon = faSpinner;
                 break;
             default:
-                messageIcon = 'info-circle';
+                messageIcon = faInfoCircle;
                 break;
         }
 
@@ -51,9 +52,9 @@ const Message: FC<MessageProps> = props => {
     return (
         <div className="message">
             <div className="message-content">
-                {/* <div className="icon">
+                <div className="icon">
                     { renderIcon(type) }
-                </div> */}
+                </div>
                 <div className="text">
                     {text}
                 </div>
@@ -63,9 +64,9 @@ const Message: FC<MessageProps> = props => {
 }
 
 export const Icon: FC<IconProps> = props => {
-    console.log(props)
     const { className, theme, ...restProps } = props
-    const classes = classnames(className, { [`icon-${theme}`]: theme });
+    const classes = classNames(className, { [`icon-${theme}`]: theme });
+    // console.log(classes)
 
     return (
         <FontAwesomeIcon className={classes} {...restProps}></FontAwesomeIcon>

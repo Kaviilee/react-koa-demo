@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Input, Button, message } from 'antd';
+// import { Input, Button, message } from 'antd';
+import message from '@components/Message'
 import _request from '~/utils/request'
 
 export interface LoginProps {

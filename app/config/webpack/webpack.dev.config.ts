@@ -4,8 +4,14 @@ import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-serv
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-import CompressionWebpackPlugin from 'compression-webpack-plugin'
-import ProgressBarPlugin from 'progress-bar-webpack-plugin'
+import CompressionWebpackPlugin from 'compression-webpack-plugin';
+import ProgressBarPlugin from 'progress-bar-webpack-plugin';
+const DashboardPlugin = require('webpack-dashboard/plugin');
+// import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
+
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+
+const smp = new SpeedMeasurePlugin()
 
 const isLoal = process.env.ENV === 'local'
 
@@ -69,7 +75,14 @@ export const webpackConfig: Configuration = {
             },
             {
                 test: /\.less$/,
-                loader: 'css-loader!less-loader!postcss-loader'
+                use: [{
+                    loader: MiniCssExtractPlugin.loader,
+                    options: { hmr: true },
+                }, {
+                    loader: 'css-loader'
+                }, {
+                    loader: 'less-loader'
+                }]
             },
             {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -104,7 +117,7 @@ export const webpackConfig: Configuration = {
             chunkFilename: `static/css/[name].[chunkhash:8].css`,
         }),
         // 打包分析plugin
-        new BundleAnalyzerPlugin(),
+        // new BundleAnalyzerPlugin(),
         // gzip压缩
         new CompressionWebpackPlugin({
             filename: "[path].gz[query]",
@@ -120,6 +133,11 @@ export const webpackConfig: Configuration = {
             width: 60,
             total: 100
         }),
+        new DashboardPlugin()
+        /* new UglifyJsPlugin({
+            cache: true,
+            parallel: true,
+        }) */
         // new ESBuildPlugin()
     ],
     optimization: {
@@ -162,4 +180,4 @@ isLoal && Object.assign(webpackConfig.devServer, {
     },
 })
 
-export default webpackConfig;
+export default smp.wrap(webpackConfig);

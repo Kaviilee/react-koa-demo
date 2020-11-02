@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import { CSSTransitionProps } from 'react-transition-group/CSSTransition';
+// import { CSSTransitionProps } from 'react-transition-group/CSSTransition';
 import Message, { MessageType } from './message';
-// import style from '../../styles/message.less'
+import './message.less'
 
 type MessageApi = Partial<Record<MessageType, (text: string) => void>>
 
-type AnimationName = 'zoom-in-top' | 'zoom-in-left' | 'zoom-in-bottom' | 'zoom-in-right' | 'slide-in-top'
+// type AnimationName = 'zoom-in-top' | 'zoom-in-left' | 'zoom-in-bottom' | 'zoom-in-right' | 'slide-in-top'
 
 export interface Notice {
     text: string;
     key: string;
     type: MessageType;
-}
-
-interface TransitionProps extends CSSTransitionProps {
-    classNames?: any;
-    animation?: AnimationName;
-    wrapper?: boolean;
 }
 
 let uid = 0
@@ -31,36 +25,11 @@ const getUuid = (): string => {
 
 let add: (notice: Notice) => void
 
-export const Transition: React.FC<TransitionProps> = props => {
-    const {
-        children,
-        classNames,
-        animation,
-        wrapper,
-        ...restProps
-    } = props
-
-    return (
-        <CSSTransition
-          classNames={classNames ? classNames : animation}
-          {...restProps}
-        >
-          {wrapper ? <div>{children}</div> : children}
-        </CSSTransition>
-    )
-}
-
-Transition.defaultProps = {
-    unmountOnExit: true,
-    appear: true,
-}
-
 
 export const MessageContainer = () => {
     const [notices, setNotices] = useState<Notice[]>([]);
-    const timer = 3000;
+    const duration = 3000;
     const max = 10;
-
     const remove = (notice: Notice) => {
         const {key} = notice;
 
@@ -71,11 +40,11 @@ export const MessageContainer = () => {
 
     add = (notice: Notice) => {
         setNotices((prevNotices) => [...prevNotices, notice]);
-        console.log(notices)
+
 
         setTimeout(() => {
             remove(notice)
-        }, timer);
+        }, duration);
     }
 
     useEffect(() => {
@@ -87,20 +56,19 @@ export const MessageContainer = () => {
 
     return (
         <div className="message-container">
-            {/* <TransitionGroup> */}
+            <TransitionGroup>
                 {
                     notices.map(({ text, key, type }) => (
-                        // <Transition
-                        //     timeout={200}
-                        //     in
-                        //     animation="slide-in-top"
-                        //     key={key}
-                        //     >
-                            <Message key={key} type={type} text={text} />
-                        // </Transition>
+                        <CSSTransition
+                            timeout={200}
+                            classNames="slide-in-top"
+                            key={key}
+                            >
+                            <Message type={type} text={text} />
+                        </CSSTransition>
                     ))
                 }
-            {/* </TransitionGroup> */}
+            </TransitionGroup>
         </div>
     )
 }

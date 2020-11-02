@@ -1,0 +1,68 @@
+@import '../../styles/variables';
+
+.message-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 1051;
+
+    &,
+    .message {
+      pointer-events: none;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: @message-margin-y;
+      margin-bottom: @message-margin-y;
+
+      .message-content {
+        display: inline-flex;
+        background: @white;
+        box-shadow: @box-shadow-base;
+        padding: @message-padding;
+        border-radius: @border-radius-base;
+
+        .icon {
+          margin-right: @message-icon-margin-x;
+        }
+      }
+    }
+
+    .item-enter {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    .item-enter-active {
+        opacity: 1;
+        transform: translateX(0);
+        transition: opacity 300ms, transform 300ms;
+    }
+    .item-exit {
+        opacity: 1;
+    }
+    .item-exit-active {
+        opacity: 0;
+        transform: scale(0.9);
+        transition: opacity 300ms, transform 300ms;
+    }
+}
+
+@theme-colors: {
+  primary:    @primary;
+  secondary:  @secondary;
+  success:    @success;
+  info:       @info;
+  warning:    @warning;
+  danger:     @danger;
+  error:      @danger;
+  light:      @light;
+  dark:       @dark
+}
+
+each(@theme-colors, {
+    .icon-@{key} {
+        color: @value
+    }
+})
