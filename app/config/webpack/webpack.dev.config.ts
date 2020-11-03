@@ -6,6 +6,9 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import CompressionWebpackPlugin from 'compression-webpack-plugin';
 import ProgressBarPlugin from 'progress-bar-webpack-plugin';
+
+import { createCSSRule } from './createCssRule'
+
 const DashboardPlugin = require('webpack-dashboard/plugin');
 // import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
 
@@ -18,8 +21,8 @@ const isLoal = process.env.ENV === 'local'
 const frontendDir = resolve(__dirname, '..', '..')
 
 interface Configuration extends WebpackConfiguration {
-    devServer?: WebpackDevServerConfiguration;
-  }
+    devServer ? : WebpackDevServerConfiguration;
+}
 
 export const webpackConfig: Configuration = {
     mode: 'development',
@@ -38,63 +41,24 @@ export const webpackConfig: Configuration = {
         }
     },
     module: {
-        rules: [
-            {
+        rules: [{
                 test: /\.ts(x?)$/,
                 loader: 'ts-loader',
                 options: {
                     transpileOnly: true
                 }
             },
-            {
-                test: /\.css$/,
-                use: [
-                    {
-                      loader: MiniCssExtractPlugin.loader,
-                      options: { hmr: true },
-                    },
-                    'css-modules-typescript-loader',
-                    {
-                      loader: 'css-loader',
-                      options: {
-                        modules: false,
-                        // modules: {
-                        //   mode: 'local',
-                        //   context: resolve(frontendDir, 'src'),
-                        //   localIdentName: '[path][name]__[local]',
-                        // },
-                        localsConvention: 'camelCaseOnly',
-                        importLoaders: 0,
-                        sourceMap: true,
-                      },
-                    },
-                    {
-                        loader: 'postcss-loader'
-                    }
-                ],
-            },
-            {
-                test: /\.less$/,
-                use: [{
-                    loader: MiniCssExtractPlugin.loader,
-                    options: { hmr: true },
-                }, {
-                    loader: 'css-loader'
-                }, {
-                    loader: 'less-loader'
-                }]
-            },
+            createCSSRule(/\.css$/),
+            createCSSRule(/\.less$/, 'less-loader'),
             {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-                use: [
-                    {
-                        loader: "url-loader",
-                        options: {
-                            limit: 10000,
-                            name: '[name].[ext]?[hash]'
-                        }
+                use: [{
+                    loader: "url-loader",
+                    options: {
+                        limit: 10000,
+                        name: '[name].[ext]?[hash]'
                     }
-                ]
+                }]
             }
         ]
     },
@@ -111,7 +75,9 @@ export const webpackConfig: Configuration = {
         }
     },
     plugins: [
-        new HtmlWebpackPlugin({ template: 'index.html' }),
+        new HtmlWebpackPlugin({
+            template: 'index.html'
+        }),
         new MiniCssExtractPlugin({
             filename: `static/css/[name].[chunkhash:8].css`,
             chunkFilename: `static/css/[name].[chunkhash:8].css`,
