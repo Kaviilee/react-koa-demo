@@ -4,7 +4,7 @@ import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontaw
 import { faCheckCircle, faTimesCircle, faInfoCircle, faExclamationCircle, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 
-export type MessageType = 'success' | 'error' | 'info' | 'warning' | 'warn';
+export type MessageType = 'success' | 'error' | 'info' | 'warning' | 'warn' | 'loading';
 
 export type ThemeType = 'primary' | 'secondary' | 'success' | 'info' | 'error' | 'warning' | 'warn' | 'light' | 'dark';
 
@@ -23,7 +23,7 @@ const Message: FC<MessageProps> = props => {
     // console.log(props)
     const renderIcon = (messageType: MessageType) => {
         let messageIcon: IconProp;
-
+        let mt = '';
         switch(messageType) {
             case 'success':
                 messageIcon = faCheckCircle;
@@ -38,15 +38,16 @@ const Message: FC<MessageProps> = props => {
             case 'warn':
                 messageIcon = faExclamationCircle;
                 break;
-            case 'loading':
+            /* case 'loading':
                 messageIcon = faSpinner;
-                break;
+                mt = 'secondary';
+                break; */
             default:
                 messageIcon = faInfoCircle;
                 break;
         }
 
-        return <Icon icon={messageIcon} theme={messageType}></Icon>
+        return <Icon icon={messageIcon} theme={mt || messageType}></Icon>
     }
 
     return (

@@ -115,6 +115,13 @@ const api: MessageApi = {
         key: getUuid(),
         type: 'error'
       })
+    },
+    loading: (text) => {
+      add({
+        text,
+        key: getUuid(),
+        type: 'loading'
+      })
     }
 }
 

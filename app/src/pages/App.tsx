@@ -1,4 +1,4 @@
-import '../styles/App.less';
+// import '../styles/App.less';
 // import '../styles/message.less'
 import logo from '~/static/logo.svg'
 import React from 'react'
@@ -10,12 +10,12 @@ import TodoList from '@components/TodoList'
 const App = () => {
     return (
         <div className="App">
-            <header className="App-header">
+            {/* <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo" />
                 <p>
                 React Koa Demo
                 </p>
-            </header>
+            </header> */}
             <main className="App-main">
                 <Router>
                 <Switch>
