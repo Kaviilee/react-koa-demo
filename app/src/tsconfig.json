@@ -1,7 +1,9 @@
 {
     "compilerOptions": {
+      "experimentalDecorators": true,
       "esModuleInterop": true,
       "moduleResolution": "node",
+      "target": "esNext",
       "baseUrl": ".",
       "jsx": "react",
       "paths": {
@@ -9,8 +11,5 @@
         "@components/*": ["components/*"],
         "~/*": ["./*"]
       }
-    },
-    "exclude": [
-        "antd"
-    ]
+    }
   }

@@ -1,11 +1,8 @@
-// import '../styles/App.less';
-// import '../styles/message.less'
-import logo from '~/static/logo.svg'
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
-// import routes from '~/routes'
+import Devtools from 'mobx-react-devtools'
 import Login from '@components/Login'
-import TodoList from '@components/TodoList'
+import TodoList from '@components/Todo'
 
 const App = () => {
     return (
@@ -19,11 +16,13 @@ const App = () => {
             <main className="App-main">
                 <Router>
                 <Switch>
-                    <Route path="/" exact component={Login}></Route>
-                    <Route path="/todo" exact component={TodoList}></Route>
+                    <Route path="/login" exact component={Login}></Route>
+                    <Route path="/" exact component={TodoList}></Route>
                 </Switch>
                 </Router>
             </main>
+
+            {/* <Devtools /> */}
         </div>
     )
 }

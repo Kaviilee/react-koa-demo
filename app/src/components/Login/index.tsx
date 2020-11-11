@@ -1,18 +1,21 @@
 import React, { FC, useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-// import { Input, Button, message } from 'antd';
+import { inject, observer } from 'mobx-react'
+import { Store } from '~/store'
 import message from '@components/Message'
 import _request from '~/utils/request'
 import Particles from 'particlesjs'
 
 export interface LoginProps {
     handleSubmit?: (event: React.MouseEvent) => void;
+    users?: Store;
 }
 
-const Login: FC<LoginProps> = () => {
+const Login: FC<LoginProps> = (props) => {
     const history = useHistory()
     // const location = useLocation()
-
+    const { users } = props
+    // console.log(users)
     const [name, setName] = useState('')
     const [password, setPassword] = useState('')
 
@@ -34,19 +37,20 @@ const Login: FC<LoginProps> = () => {
         _request<{ success: boolean, token: string, message?: string }>('post' ,'/auth/user', JSON.stringify(info))
           .then((res) => {
             if (res.success) {
-                sessionStorage.setItem('demo-token', res.token)
+                localStorage.setItem('demo-token', res.token)
+                users.updateToken(res.token)
                 message.success('登录成功')
                 history.push({
-                    pathname: '/todo'
+                    pathname: '/'
                 })
             } else {
                 message.error(res.message  || '请求错误！')
-                sessionStorage.removeItem('demo-token')
+                // localStorage.removeItem('demo-token')
             }
           }).catch((err) => {
             message.error(err.statusText || '请求错误！')
             console.log(err.statusText)
-            sessionStorage.removeItem('demo-token')
+            // localStorage.removeItem('demo-token')
           })
         event.preventDefault();
       }
@@ -85,4 +89,4 @@ const Login: FC<LoginProps> = () => {
       );
 }
 
-export default Login
+export default inject('users')(observer(Login))
