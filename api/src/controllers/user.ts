@@ -1,6 +1,6 @@
 // import user from '../models/user'
 import { Context } from "koa";
-import { getManager, Repository, Not, Equal, Like, getRepository } from "typeorm";
+import { getRepository, getConnection } from "typeorm";
 import { validate, ValidationError } from "class-validator";
 import { request, summary, path, body, responsesAll, tagsAll } from "koa-swagger-decorator";
 import jwt from "jsonwebtoken";
@@ -14,40 +14,36 @@ export default class UserController {
 
     @request("get", "/auth/me")
     public static async getUserInfo(ctx: Context): Promise<void> {
-        const userRepository: Repository<User> = getRepository(User);
-
         const { authorization: token } = ctx.request.headers;
         if (!token) {
             ctx.body = "unauthorized";
             ctx.status = 401;
         } else {
-            const user: any = token2User(token, "react-koa-demo");
-    
-            // const id = user.id;
-            const { id, userName } = await userRepository.findOne(user.id);
+            const user = token2User(token, "react-koa-demo");
+
+            const { id, userName } = await getRepository(User)
+                .createQueryBuilder("user")
+                .where("user.id = :id", { id: user.id })
+                .getOne();
+
             ctx.body = {
                 id,
                 name: userName
             };
         }
+        
     }
 
     @request("post", "/auth/user")
     @summary("login with user_name and password")
     @body(userSchema)
     public static async postUserAuth(ctx: Context): Promise<void> {
-        const userRepository: Repository<User> = getManager().getRepository(User);
-
-        const userUpdate: User = new User();
-
         const data = ctx.request.body;
         // const data = JSON.parse(datas);
-        console.log(data);
-        const userInfo: User = await userRepository.findOne({
-            where: {
-                userName: data.name
-            }
-        });
+        const userInfo: User = await getRepository(User)
+            .createQueryBuilder("user")
+            .where("user.userName = :name", { name: data.name })
+            .getOne();
 
         if (userInfo) {
             if (userInfo.password !== data.password) {
@@ -63,13 +59,15 @@ export default class UserController {
                 
                 const secret = process.env.JWT_SECRET || "react-koa-demo";
                 const token = jwt.sign(userToken, secret); // 签发token
-                userUpdate.token = token;
-                userUpdate.userName = userInfo.userName;
-                userUpdate.id = userInfo.id;
-                await userRepository.save(userUpdate);
-                // const token = userToken // 签发token
+
+                await getConnection()
+                    .createQueryBuilder()
+                    .update(User)
+                    .set({
+                        token
+                    }).where("id = :id", { id: userInfo.id }).execute();
+                ctx.status = 201;
                 ctx.body = {
-                    success: true,
                     token: token
                 };
             }
@@ -77,6 +75,40 @@ export default class UserController {
             ctx.status = 400;
             ctx.body = {
                 error: "user is not exist!"
+            };
+        }
+    }
+
+    @request("post", "/auth/register")
+    @summary("register new user")
+    @body(userSchema)
+    public static async registerUser(ctx: Context): Promise<void> {
+        const data = ctx.request.body;
+
+        const u = await getRepository(User)
+            .createQueryBuilder("user")
+            .having("user.userName = :name", { name: data.name })
+            .getOne();
+
+        console.log(u);
+        if (u) {
+            ctx.status = 400;
+            ctx.body = {
+                message: "existing user"
+            };
+        } else {
+            await getConnection()
+                .createQueryBuilder()
+                .insert()
+                .into(User)
+                .values({
+                    userName: data.name,
+                    password: data.password
+                }).execute();
+
+            ctx.status = 201;
+            ctx.body = {
+                message: "create user success"
             };
         }
     }

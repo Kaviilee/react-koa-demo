@@ -7,7 +7,6 @@ listRouter.get("/api/todo", todolist.getTodolist);
 listRouter.post("/api/todo", todolist.addTodo);
 listRouter.delete("/api/todo/:id", todolist.removeTodo);
 listRouter.put("/api/todo", todolist.updateTodo);
-// console.log(router)
 
 listRouter.mapDir(__dirname);
 

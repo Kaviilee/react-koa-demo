@@ -34,24 +34,18 @@ const Login: FC<LoginProps> = (props) => {
             name: name,
             password: password
         }
-        _request<{ success: boolean, token: string, message?: string }>('post' ,'/auth/user', JSON.stringify(info))
-          .then((res) => {
-            if (res.success) {
-                localStorage.setItem('demo-token', res.token)
-                users.updateToken(res.token)
-                message.success('登录成功')
-                history.push({
-                    pathname: '/'
-                })
-            } else {
-                message.error(res.message  || '请求错误！')
-                // localStorage.removeItem('demo-token')
-            }
-          }).catch((err) => {
-            message.error(err.statusText || '请求错误！')
-            console.log(err.statusText)
-            // localStorage.removeItem('demo-token')
+        try {
+          const res = await _request<{ success: boolean, token: string, message?: string }>('post' ,'/auth/user', JSON.stringify(info))
+          localStorage.setItem('demo-token', res.token)
+          users.updateToken(res.token)
+          message.success('登录成功')
+          history.push({
+              pathname: '/'
           })
+        } catch (err) {
+          console.log(err)
+          message.error(err.statusText || '请求错误！')
+        }
         event.preventDefault();
       }
 

@@ -24,6 +24,6 @@ export class User {
 
 export const userSchema = {
     id: { type: "number", required: true, example: 1 },
-    user_name: { type: "string", required: true, example: "kavii" },
+    userName: { type: "string", required: true, example: "kavii" },
     password: { type: "string", required: true, example: "123" }
 };

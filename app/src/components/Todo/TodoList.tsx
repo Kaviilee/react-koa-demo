@@ -11,7 +11,7 @@ const TodoList = ({ users }) => {
     const [todos, setTodos] = useState('')
     const [activeKey, setActiveKey] = useState('todo')
     const [name, setName] = useState('')
-    console.log(users)
+    // console.log(users)
 
     // const [user, setUser] = useState({} as User)
 
@@ -19,6 +19,7 @@ const TodoList = ({ users }) => {
       // console.log(localStorage.getItem('demo-token'))
       if (localStorage.getItem('demo-token')) {
         getTodoList()
+        getMe()
       }
     }, [])
 
@@ -130,6 +131,15 @@ const TodoList = ({ users }) => {
         } catch (error) {
             console.log(error)
         }
+    }
+
+    const getMe = async () => {
+      try {
+        const data = await _request<{ id: number, name: string }>('get', '/auth/me')
+        console.log(data)
+      } catch (e) {
+        message.error(e)
+      }
     }
 
     const addTodo = (data: todoProps) => {
