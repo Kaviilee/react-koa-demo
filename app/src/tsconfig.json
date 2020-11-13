@@ -1,15 +1,15 @@
 {
-    "compilerOptions": {
-      "experimentalDecorators": true,
-      "esModuleInterop": true,
-      "moduleResolution": "node",
-      "target": "esNext",
-      "baseUrl": ".",
-      "jsx": "react",
-      "paths": {
-        "@pages/*": ["pages/*"],
-        "@components/*": ["components/*"],
-        "~/*": ["./*"]
-      }
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "target": "esNext",
+    "baseUrl": ".",
+    "jsx": "react",
+    "paths": {
+      "@pages/*": ["pages/*"],
+      "@components/*": ["components/*"],
+      "~/*": ["./*"]
     }
   }
+}

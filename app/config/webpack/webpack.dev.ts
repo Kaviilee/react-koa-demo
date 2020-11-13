@@ -3,28 +3,29 @@ import { Configuration as WebpackConfiguration } from "webpack";
 import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import CompressionWebpackPlugin from 'compression-webpack-plugin';
 import ProgressBarPlugin from 'progress-bar-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
 
 import { createCSSRule } from './createCssRule'
 
 const DashboardPlugin = require('webpack-dashboard/plugin');
-// import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
 
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 
 const smp = new SpeedMeasurePlugin()
 
-const isLoal = process.env.ENV === 'local'
+const isLoal = process.env.ENV === 'local';
 
-const frontendDir = resolve(__dirname, '..', '..')
+const frontendDir = resolve(__dirname, '..', '..');
 
 interface Configuration extends WebpackConfiguration {
-    devServer ? : WebpackDevServerConfiguration;
+    devServer ?: WebpackDevServerConfiguration;
 }
 
 export const webpackConfig: Configuration = {
+    stats: 'minimal', // webpack bundle information
     mode: 'development',
     entry: join(frontendDir, 'src', 'index.tsx'),
     output: {
@@ -99,11 +100,11 @@ export const webpackConfig: Configuration = {
             width: 60,
             total: 100
         }),
-        new DashboardPlugin()
-        /* new UglifyJsPlugin({
-            cache: true,
-            parallel: true,
-        }) */
+        new DashboardPlugin(),
+        // new UglifyJsPlugin({
+        //     cache: true,
+        //     parallel: true,
+        // })
         // new ESBuildPlugin()
     ],
     optimization: {

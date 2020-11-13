@@ -1,2 +1,2 @@
 require('../register-tsnode');
-module.exports = require('./webpack.dev.config.ts').webpackConfig;
+module.exports = require('./webpack.dev.ts').webpackConfig;
