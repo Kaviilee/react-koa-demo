@@ -15,7 +15,6 @@
     "@babel/core": "^7.10.2",
     "@babel/node": "^7.10.1",
     "@babel/preset-react": "^7.10.1",
-    "@types/antd": "^1.0.0",
     "@types/compression-webpack-plugin": "^4.0.0",
     "@types/html-webpack-plugin": "^3.2.3",
     "@types/jsonwebtoken": "^8.5.0",

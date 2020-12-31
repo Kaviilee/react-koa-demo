@@ -40,7 +40,7 @@ const Login: FC<LoginProps> = (props) => {
       users.updateToken(res.token)
       message.success('登录成功')
       history.push({
-        pathname: '/'
+        pathname: '/todo'
       })
     } catch (err) {
       console.log(err)

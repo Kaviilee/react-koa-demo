@@ -11,8 +11,8 @@ const App = () => {
         {/* 路由配置 */}
         <Router>
           <Switch>
-              <Route path="/login" exact component={Login}></Route>
-              <Route path="/" exact component={TodoList}></Route>
+              <Route path="/" exact component={Login}></Route>
+              <Route path="/todo" exact component={TodoList}></Route>
           </Switch>
         </Router>
       </main>

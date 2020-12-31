@@ -161,7 +161,7 @@ const TodoList = ({ users }) => {
 
             <input name="todos" className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal text-base" type="text" placeholder="Add Todo" value={todos} onChange={handleChange} onKeyDown={handleKeydown} />
 
-            <ul className="flex border-b mt-4 mb-2">
+            <ul className="flex border-b mt-4 mb-2 cursor-pointer">
                 <li className="-mb-px mr-1" onClick={() => setActiveKey('todo')}>
                     <a className={
                       classNames(cla, {
