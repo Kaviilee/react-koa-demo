@@ -5,10 +5,14 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CompressionWebpackPlugin from 'compression-webpack-plugin';
 import ProgressBarPlugin from 'progress-bar-webpack-plugin';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import HappyPack from 'happypack'
 
-import { createCSSRule } from './createCssRule'
+const { ESBuildPlugin } = require('esbuild-loader')
+
+import {
+  createCSSRule
+} from './createCssRule'
 
 const DashboardPlugin = require('webpack-dashboard/plugin');
 
@@ -21,130 +25,144 @@ const isLoal = process.env.ENV === 'local';
 const frontendDir = resolve(__dirname, '..', '..');
 
 interface Configuration extends WebpackConfiguration {
-    devServer ?: WebpackDevServerConfiguration;
+  devServer ? : WebpackDevServerConfiguration;
 }
 
 export const webpackConfig: Configuration = {
-    stats: 'minimal', // webpack bundle information
-    mode: 'development',
-    entry: join(frontendDir, 'src', 'index.tsx'),
-    output: {
-        path: join(frontendDir, 'dist'),
-        filename: `static/js/[name].[hash:8].js`,
-        chunkFilename: `static/js/[name].[hash:8].js`,
+  stats: 'minimal', // webpack bundle information
+  mode: 'development',
+  entry: join(frontendDir, 'src', 'index.tsx'),
+  output: {
+    path: join(frontendDir, 'dist'),
+    filename: `static/js/[name].[hash:8].js`,
+    chunkFilename: `static/js/[name].[hash:8].js`,
+  },
+  resolve: {
+    extensions: ['.js', '.ts', '.tsx'],
+    alias: {
+      '~': resolve(frontendDir, "src"),
+      "@components": resolve(frontendDir, "src/components"),
+      "@pages": resolve(frontendDir, "src/pages")
     },
-    resolve: {
-        extensions: ['.js', '.ts', '.tsx'],
-        alias: {
-            '~': resolve(frontendDir, "src"),
-            "@components": resolve(frontendDir, "src/components"),
-            "@pages": resolve(frontendDir, "src/pages")
+    mainFields: ['jsnext:main', 'main'],
+    modules: [resolve(__dirname, '../../node_modules')]
+  },
+  module: {
+    rules: [
+      {
+        test: /\.ts(x?)$/,
+        loader: 'esbuild-loader',
+        options: {
+          loader: 'tsx',
+          target: 'esnext'
+        },
+        include: resolve(__dirname, '../../src')
+      },
+      {
+        test: /\.ts$/,
+        loader: 'esbuild-loader',
+        options: {
+          loader: 'ts',
+          target: 'esnext'
         }
-    },
-    module: {
-        rules: [{
-                test: /\.ts(x?)$/,
-                loader: 'ts-loader',
-                options: {
-                    transpileOnly: true
-                }
-            },
-            createCSSRule(/\.css$/),
-            createCSSRule(/\.less$/, 'less-loader'),
-            {
-                test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-                use: [{
-                    loader: "url-loader",
-                    options: {
-                        limit: 10000,
-                        name: '[name].[ext]?[hash]'
-                    }
-                }]
-            }
-        ]
-    },
-    devtool: 'source-map',
-    devServer: {
-        historyApiFallback: true,
-        disableHostCheck: true,
-        inline: true,
-        hot: true,
-        watchOptions: {
-            aggregateTimeout: 300,
-            poll: 1000,
-            ignored: /node_modules/
+      },
+      createCSSRule(/\.css$/),
+      createCSSRule(/\.less$/, 'less-loader'),
+      {
+        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        use: ['happypack/loader?id=img'],
+        include: resolve(__dirname, '../../src')
+      }
+    ]
+  },
+  devtool: 'source-map',
+  devServer: {
+    historyApiFallback: true,
+    disableHostCheck: true,
+    inline: true,
+    hot: true,
+  },
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: 1000,
+    ignored: /node_modules/
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'index.html'
+    }),
+    new MiniCssExtractPlugin({
+      filename: `static/css/[name].[chunkhash:8].css`,
+      chunkFilename: `static/css/[name].[chunkhash:8].css`,
+    }),
+    // 打包分析plugin
+    // new BundleAnalyzerPlugin(),
+    // gzip压缩
+    new CompressionWebpackPlugin({
+      filename: "[path].gz[query]",
+      algorithm: "gzip",
+      test: /\.js$|\.css$|\.html$/,
+      threshold: 10240,
+      minRatio: 0.8
+    }),
+    // 打包进度条显示
+    new ProgressBarPlugin({
+      format: 'build [:bar] :percent (:elapsed seconds)',
+      clear: false,
+      width: 60,
+      total: 100
+    }),
+    new DashboardPlugin(),
+    new HappyPack({
+      id: 'img',
+      loaders: [{
+        loader: "url-loader",
+        options: {
+          limit: 10000,
+          name: '[name].[ext]?[hash]'
         }
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: 'index.html'
-        }),
-        new MiniCssExtractPlugin({
-            filename: `static/css/[name].[chunkhash:8].css`,
-            chunkFilename: `static/css/[name].[chunkhash:8].css`,
-        }),
-        // 打包分析plugin
-        // new BundleAnalyzerPlugin(),
-        // gzip压缩
-        new CompressionWebpackPlugin({
-            filename: "[path].gz[query]",
-            algorithm: "gzip",
-            test: /\.js$|\.css$|\.html$/,
-            threshold: 10240,
-            minRatio: 0.8
-        }),
-        // 打包进度条显示
-        new ProgressBarPlugin({
-            format: 'build [:bar] :percent (:elapsed seconds)',
-            clear: false,
-            width: 60,
-            total: 100
-        }),
-        new DashboardPlugin(),
-        // new UglifyJsPlugin({
-        //     cache: true,
-        //     parallel: true,
-        // })
-        // new ESBuildPlugin()
-    ],
-    optimization: {
-        splitChunks: { // 提取公共代码
-            chunks: 'async',
-            minSize: 30000,
-            // minRemainingSize: 0,
-            maxSize: 0,
-            minChunks: 1,
-            maxAsyncRequests: 6,
-            maxInitialRequests: 4,
-            automaticNameDelimiter: '~',
-            cacheGroups: {
-                defaultVendors: {
-                    test: /[\\/]node_modules[\\/]/,
-                    priority: -10
-                },
-                default: {
-                    minChunks: 2,
-                    priority: -20,
-                    reuseExistingChunk: true
-                }
-            }
+      }]
+    }),
+    new ESBuildPlugin()
+    // new UglifyJsPlugin({
+    //     cache: true,
+    //     parallel: true,
+    // })
+    // new ESBuildPlugin()
+  ],
+  optimization: {
+    runtimeChunk: 'single',
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+        common: {
+          name: 'common',
+          chunks: 'all',
+          minSize: 30,
+          minChunks: 2
         }
-    }
+      },
+    },
+  },
 }
 
 isLoal && Object.assign(webpackConfig.devServer, {
-    // public: '/',
-    port: 8081,
-    proxy: {
-        '/auth': {
-            target: 'http://localhost:8080',
-            changeOrigin: true
-        },
-        '/api': {
-            target: 'http://localhost:8080',
-            changeOrigin: true
-        }
+  // public: '/',
+  port: 8081,
+  proxy: {
+    '/auth': {
+      target: 'http://localhost:8080',
+      changeOrigin: true
     },
+    '/api': {
+      target: 'http://localhost:8080',
+      changeOrigin: true
+    }
+  },
 })
 
 export default smp.wrap(webpackConfig);

@@ -1,4 +1,4 @@
-FROM node:10.15-alpine
+FROM node:12.13.0
 
 ENV APP_ROOT /usr/src/app
 

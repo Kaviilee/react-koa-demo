@@ -1,5 +1,6 @@
 import React, { FC, useState, useEffect, ChangeEvent, KeyboardEvent } from 'react'
 import { inject } from 'mobx-react'
+import { useHistory } from 'react-router'
 import message from '@components/Message'
 import _request from '~/utils/request'
 import classNames from 'classnames'
@@ -11,15 +12,16 @@ const TodoList = ({ users }) => {
     const [todos, setTodos] = useState('')
     const [activeKey, setActiveKey] = useState('todo')
     const [name, setName] = useState('')
+    const histoty = useHistory()
     // console.log(users)
 
     // const [user, setUser] = useState({} as User)
 
     useEffect(() => {
       // console.log(localStorage.getItem('demo-token'))
+      getMe()
       if (localStorage.getItem('demo-token')) {
         getTodoList()
-        getMe()
       }
     }, [])
 
@@ -136,7 +138,8 @@ const TodoList = ({ users }) => {
     const getMe = async () => {
       try {
         const data = await _request<{ id: number, name: string }>('get', '/auth/me')
-        console.log(data)
+        // console.log(data)
+        setName(data.name)
       } catch (e) {
         message.error(e)
       }

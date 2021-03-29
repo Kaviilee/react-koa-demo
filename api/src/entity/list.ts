@@ -21,6 +21,7 @@ export class List {
 
 export const listSchema = {
     id: { type: "number", required: true, example: 1 },
+    name: { type: "string", require: true, example: "test" },
     user_id: { type: "number", required: true, example: 1 },
     content: { type: "string", required: true, example: "test" } ,
     status: { type: "number", required: true, example: 1 }

@@ -30,7 +30,7 @@ const request = < T > (method: string, url: string, body ? : ArrayBuffer | Array
         message.error(error.statusText)
         setTimeout(() => {
           localStorage.removeItem('demo-token')
-          window.location.href = '/login'
+          window.location.href = '/'
         }, 1000)
       }
       throw error
