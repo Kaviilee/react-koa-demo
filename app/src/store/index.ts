@@ -1,8 +1,8 @@
 import { action, computed, observable } from 'mobx'
 
 type User = {
-  id: number;
-  userName: string;
+  id: number
+  userName: string
 }
 
 class Store {
@@ -28,11 +28,9 @@ class Store {
 const users = new Store()
 
 const stores = {
-  users
+  users,
 }
 
-export {
-  Store
-}
+export { Store }
 
 export default stores
